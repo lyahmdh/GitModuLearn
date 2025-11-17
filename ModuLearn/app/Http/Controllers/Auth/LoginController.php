@@ -18,14 +18,14 @@ class LoginController extends Controller
         return view('auth.admin-login');
     }
 
-    public function login(Request $request)
+    public function login(Request $request) //semua role
     {
         $credentials = $request->validate([
             'email' => 'required',
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($credentials)) { //laravel otomatis cari user
             $user = Auth::user();
 
             if ($user->role === 'admin') {
@@ -42,7 +42,7 @@ class LoginController extends Controller
         return back()->withErrors(['login' => 'Email atau password salah.']);
     }
 
-    public function adminLogin(Request $request)
+    public function adminLogin(Request $request) //validasi 
     {
         $credentials = $request->validate([
             'email' => 'required',
