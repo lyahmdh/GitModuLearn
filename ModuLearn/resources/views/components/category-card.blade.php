@@ -5,7 +5,7 @@
                  class="card-img-top" alt="category">
 
             <div class="card-body text-center">
-                <h5 class="card-title fw-bold text-dark">{{ $category->name }}</h5>
+                <h5 class="card-title fw-bold text-dark">{{ $course->name }}</h5>
             </div>
         </div>
     </a>

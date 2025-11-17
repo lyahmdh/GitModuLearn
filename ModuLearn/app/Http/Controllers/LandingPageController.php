@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Modul;
-use App\Models\Category;
+use App\Models\Course; // FIXED
+use App\Models\Module;
 
 class LandingPageController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
+        $courses = Course::all();
+        $modules = Module::latest()->take(6)->get();
 
-        // modul terbaru
-        $latestModules = Modul::latest()->take(6)->get();
-
-        return view('web.landing.index', compact('categories', 'latestModules'));
+        return view('landing.index', compact('courses', 'modules'));
     }
 }

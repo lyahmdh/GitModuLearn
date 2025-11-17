@@ -4,7 +4,7 @@
 
 <div class="container">
 
-    <h3 class="fw-bold mb-4">{{ $category->name }}</h3>
+    <h3 class="fw-bold mb-4">{{ $course->name }}</h3>
 
     @if($modules->count() == 0)
         <p class="text-secondary">Belum ada modul untuk kategori ini.</p>

@@ -3,63 +3,56 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Course;
-use App\Models\Category;
+use Illuminate\Http\Request;
 
 class AdminCourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::with('category')->get();
+        $courses = Course::all();
         return view('admin.courses.index', compact('courses'));
     }
 
     public function create()
     {
-        $categories = Category::all();
-        return view('admin.courses.create', compact('categories'));
+        return view('admin.courses.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required',
-            'title' => 'required',
-            'description' => 'required'
+            'name' => 'required|string',
         ]);
 
-        Course::create($request->all());
+        Course::create([
+            'name' => $request->name,
+        ]);
 
-        return redirect()->route('admin.courses.index')->with('success', 'Course created.');
+        return redirect()->route('admin.courses.index')->with('success', 'Course added.');
     }
 
-    public function edit($id)
+    public function edit(Course $course)
     {
-        $course = Course::findOrFail($id);
-        $categories = Category::all();
-
-        return view('admin.courses.edit', compact('course', 'categories'));
+        return view('admin.courses.edit', compact('course'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Course $course)
     {
-        $course = Course::findOrFail($id);
-
         $request->validate([
-            'category_id' => 'required',
-            'title' => 'required',
-            'description' => 'required'
+            'name' => 'required|string',
         ]);
 
-        $course->update($request->all());
+        $course->update([
+            'name' => $request->name,
+        ]);
 
         return redirect()->route('admin.courses.index')->with('success', 'Course updated.');
     }
 
-    public function delete($id)
+    public function destroy(Course $course)
     {
-        Course::findOrFail($id)->delete();
-        return redirect()->back()->with('success', 'Course deleted.');
+        $course->delete();
+        return redirect()->route('admin.courses.index')->with('success', 'Course deleted.');
     }
 }
