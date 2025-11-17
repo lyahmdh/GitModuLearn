@@ -56,6 +56,27 @@ Route::get('/modules/{module}', [ModuleController::class, 'show'])->name('module
 Route::get('/submodules/{submodule}', [SubmoduleController::class, 'show'])
     ->name('submodules.show');
 
+// ==========================================
+//  DASHBOARD ROUTES
+// ==========================================
+// Universal dashboard route (after login)
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+
+    if (!$user) {
+        return redirect()->route('login');
+    }
+
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    if ($user->role === 'mentor') {
+        return redirect()->route('mentor.dashboard');
+    }
+
+    return redirect()->route('mentee.dashboard'); // default mentee
+})->name('dashboard')->middleware('auth');
 
 // ==========================================
 //  AUTH ROUTES (BREEZE DEFAULT)

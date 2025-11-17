@@ -11,18 +11,19 @@ return new class extends Migration {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            // roles: mentee, mentor, admin
+
+            // role: mentee / mentor / admin
             $table->enum('role', ['mentee','mentor','admin'])->default('mentee');
-            // approval status for mentor verification
-            $table->enum('approval_status', ['pending','approved','rejected'])->nullable()->default(null);
-            // optional toggle (keperluan UI), bisa dipakai/diabaikan
-            $table->string('switch_role')->nullable()->comment('optional field to store desired switched role');
+
+            // status verifikasi khusus mentor
+            $table->boolean('is_verified')->default(0);
+
             $table->rememberToken();
             $table->timestamps();
         });
     }
+
 
     public function down(): void
     {

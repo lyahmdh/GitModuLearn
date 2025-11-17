@@ -4,14 +4,14 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class MentorVerificationFactory extends Factory
+class MentorDocumentFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'user_id' => 1,
-            'status'  => 'approved',
-            'notes'   => null,
+            'user_id'   => 1,
+            'type'      => 'certificate',
+            'file_path' => 'uploads/documents/dummy.pdf',
         ];
     }
 }

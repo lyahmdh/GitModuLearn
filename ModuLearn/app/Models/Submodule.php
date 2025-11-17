@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Submodule extends Model
 {
     use HasFactory;
+    protected $table = 'submoduls';
 
     protected $fillable = [
         'module_id',

@@ -3,17 +3,16 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\User;
-use App\Models\Submodule;
 
 class ModuleProgressFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
-            'user_id' => User::where('role', 'mentee')->inRandomOrder()->first()->id,
-            'submodule_id' => Submodule::inRandomOrder()->first()->id,
-            'status' => fake()->randomElement(['done', 'in-progress']),
+            'user_id'   => 1,
+            'module_id' => 1,
+            'progress'  => $this->faker->numberBetween(0, 100),
+            'status'    => $this->faker->randomElement(['in_progress', 'completed']),
         ];
     }
 }

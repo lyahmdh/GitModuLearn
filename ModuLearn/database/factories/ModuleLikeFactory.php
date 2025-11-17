@@ -3,16 +3,14 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Module;
-use App\Models\User;
 
 class ModuleLikeFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
-            'module_id' => Module::inRandomOrder()->first()->id,
-            'user_id' => User::where('role', 'mentee')->inRandomOrder()->first()->id,
+            'user_id'   => 1,
+            'module_id' => 1,
         ];
     }
 }

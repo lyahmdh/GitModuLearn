@@ -6,14 +6,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CourseFactory extends Factory
 {
-    public function definition()
+    public function definition(): array
     {
         return [
-            'name' => fake()->randomElement([
-                'Biologi', 'Fisika', 'Kimia',
-                'Ekonomi', 'Sosiologi', 'Geografi'
+            'name' => $this->faker->unique()->randomElement([
+                'Biologi', 'Fisika', 'Kimia', 'Ekonomi', 'Sosiologi', 'Geografi'
             ]),
-            'description' => fake()->sentence(8),
         ];
     }
 }

@@ -12,19 +12,25 @@
             dengan pembelajaran fleksibel dan terarah.
         </p>
 
-        <a href="{{ url('/pelajaran') }}" class="btn btn-primary btn-lg px-4">Mulai Belajar</a>
+        <a href="{{ route('landing.courses') }}" class="btn btn-primary btn-lg px-4">
+            Mulai Belajar
+        </a>
     </div>
 </section>
 
-<!-- KATEGORI SECTION -->
+<!-- COURSE / CATEGORY SECTION -->
 <section class="py-5 bg-light">
     <div class="container">
         <h3 class="fw-bold mb-4">Pelajaran</h3>
 
         <div class="row">
-            @foreach ($categories as $category)
-                @include('components.category-card', ['category' => $category])
-            @endforeach
+            @forelse ($courses as $course)
+                <div class="col-md-4 mb-4">
+                    @include('components.course-card', ['course' => $ca])
+                </div>
+            @empty
+                <p class="text-secondary">Belum ada course terdaftar.</p>
+            @endforelse
         </div>
     </div>
 </section>

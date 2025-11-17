@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('submoduls', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('modul_id')->constrained('moduls')->onDelete('cascade');
+            $table->foreignId('modules_id')->constrained('modules')->onDelete('cascade');
             $table->string('title');
             // content type: pdf or video
             $table->enum('content_type', ['pdf','video'])->default('pdf');
@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['modul_id','order']);
+            $table->index(['modules_id','order']);
         });
     }
 

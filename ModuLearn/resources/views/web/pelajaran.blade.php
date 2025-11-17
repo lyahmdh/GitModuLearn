@@ -7,7 +7,7 @@
 
     <div class="row">
         @foreach ($categories as $category)
-            @include('components.category-card', ['category' => $category])
+            @include('components.course-card', ['category' => $course])
         @endforeach
     </div>
 </div>
