@@ -1,68 +1,62 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
-// Public Controllers
 use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\PublicModuleController;
-use App\Http\Controllers\PublicCategoryController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LogoutController;
 
-// Mentee Controllers
-use App\Http\Controllers\MenteeDashboardController;
-use App\Http\Controllers\MenteeModuleController;
-use App\Http\Controllers\MenteeSubmoduleController;
-use App\Http\Controllers\MenteeProgressController;
-use App\Http\Controllers\RoleSwitchController;
+// Dashboard
+use App\Http\Controllers\Dashboard\MenteeDashboardController;
+use App\Http\Controllers\Dashboard\MentorDashboardController;
+use App\Http\Controllers\Dashboard\AdminDashboardController;
 
-// Mentor Controllers
-use App\Http\Controllers\MentorDashboardController;
-use App\Http\Controllers\MentorModuleController;
-use App\Http\Controllers\MentorSubmoduleController;
+// Mentee
+use App\Http\Controllers\Mentee\MenteeModuleController;
+use App\Http\Controllers\Mentee\MenteeSubmoduleController;
+use App\Http\Controllers\Mentee\MenteeProfileController;
 
-// Admin Controllers
-use App\Http\Controllers\AdminDashboardController;
-use App\Http\Controllers\AdminCategoryController;
-use App\Http\Controllers\AdminModuleController;
-use App\Http\Controllers\AdminUserController;
+// Mentor
+use App\Http\Controllers\Mentor\MentorModuleController;
+use App\Http\Controllers\Mentor\MentorSubmoduleController;
+use App\Http\Controllers\Mentor\MentorProfileController;
+use App\Http\Controllers\Mentor\MentorVerificationController;
 
+// Admin
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminModuleController;
+use App\Http\Controllers\Admin\AdminSubmoduleController;
+use App\Http\Controllers\Admin\AdminVerificationApprovalController;
+use App\Http\Controllers\Admin\AdminLogController;
 
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC ROUTES (Guest + Non-login)
+| PUBLIC ROUTES
 |--------------------------------------------------------------------------
 */
 
-// Landing Page
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
-// Public category list
-Route::get('/categories', [PublicCategoryController::class, 'index'])->name('public.categories');
+Route::get('/login', [LoginController::class, 'showLoginForm'])
+    ->name('login');
+Route::post('/login', [LoginController::class, 'login']);
 
-// Public modules list
-Route::get('/modules', [PublicModuleController::class, 'index'])->name('public.modules');
+Route::get('/register', [RegisterController::class, 'showRegisterForm'])
+    ->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
 
-// Public module details
-Route::get('/modules/{module}', [PublicModuleController::class, 'show'])->name('public.modules.show');
-
-
+Route::post('/logout', [LogoutController::class, 'logout'])
+    ->name('logout');
 
 
 /*
 |--------------------------------------------------------------------------
-| AUTHENTICATED USER ROUTES (Mentor + Mentee, both use same login)
+| AUTHENTICATED ROUTES
 |--------------------------------------------------------------------------
 */
-
-Route::middleware(['auth', 'verified'])->group(function () {
-
-    /*
-    |--------------------------------------------------------------------------
-    | ROLE SWITCHING
-    |--------------------------------------------------------------------------
-    */
-    Route::get('/switch-role', [RoleSwitchController::class, 'switch'])->name('switch.role');
-
+Route::middleware(['auth'])->group(function () {
 
     /*
     |--------------------------------------------------------------------------
@@ -71,24 +65,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     */
     Route::middleware(['role:mentee'])->prefix('mentee')->name('mentee.')->group(function () {
 
-        // Dashboard
-        Route::get('/dashboard', [MenteeDashboardController::class, 'index'])->name('dashboard');
+        // dashboard
+        Route::get('/dashboard', [MenteeDashboardController::class, 'index'])
+            ->name('dashboard');
 
-        // Browse modules
-        Route::get('/modules', [MenteeModuleController::class, 'index'])->name('modules.index');
-        Route::get('/modules/{module}', [MenteeModuleController::class, 'show'])->name('modules.show');
+        // module browsing
+        Route::get('/modules', [MenteeModuleController::class, 'index'])
+            ->name('modules.index');
 
-        // Access submodules
-        Route::get('/submodules/{submodule}', [MenteeSubmoduleController::class, 'show'])->name('submodules.show');
+        Route::get('/modules/{id}', [MenteeModuleController::class, 'show'])
+            ->name('modules.show');
 
-        // Mark as done
-        Route::post('/submodules/{submodule}/done', [MenteeProgressController::class, 'markAsDone'])
-            ->name('submodules.done');
+        // submodules
+        Route::get('/modules/{module_id}/submodules/{id}', [MenteeSubmoduleController::class, 'show'])
+            ->name('submodules.show');
 
-        // History / Progress
-        Route::get('/progress', [MenteeProgressController::class, 'index'])->name('progress');
+        // profile
+        Route::get('/profile', [MenteeProfileController::class, 'index'])
+            ->name('profile');
+        Route::post('/profile/update', [MenteeProfileController::class, 'update'])
+            ->name('profile.update');
+
     });
-
 
 
     /*
@@ -96,103 +94,87 @@ Route::middleware(['auth', 'verified'])->group(function () {
     | MENTOR ROUTES
     |--------------------------------------------------------------------------
     */
-    Route::middleware(['role:mentor', 'mentor.approved'])->prefix('mentor')->name('mentor.')->group(function () {
+    Route::middleware(['role:mentor'])->prefix('mentor')->name('mentor.')->group(function () {
 
-        // Dashboard
-        Route::get('/dashboard', [MentorDashboardController::class, 'index'])->name('dashboard');
+        // dashboard
+        Route::get('/dashboard', [MentorDashboardController::class, 'index'])
+            ->name('dashboard');
 
-        /*
-        |--------------------------------------------------------------------------
-        | MODULE CRUD
-        |--------------------------------------------------------------------------
-        */
-        Route::get('/modules', [MentorModuleController::class, 'index'])->name('modules.index');
-        Route::get('/modules/create', [MentorModuleController::class, 'create'])->name('modules.create');
-        Route::post('/modules', [MentorModuleController::class, 'store'])->name('modules.store');
-        Route::get('/modules/{module}/edit', [MentorModuleController::class, 'edit'])->name('modules.edit');
-        Route::put('/modules/{module}', [MentorModuleController::class, 'update'])->name('modules.update');
-        Route::delete('/modules/{module}', [MentorModuleController::class, 'destroy'])->name('modules.destroy');
+        // verification page for unverified mentors
+        Route::get('/verification', [MentorVerificationController::class, 'index'])
+            ->name('verification');
+        Route::post('/verification/submit', [MentorVerificationController::class, 'submit'])
+            ->name('verification.submit');
 
-        /*
-        |--------------------------------------------------------------------------
-        | SUBMODULE CRUD (belongs to mentor's module)
-        |--------------------------------------------------------------------------
-        */
-        Route::get('/modules/{module}/submodules/create', [MentorSubmoduleController::class, 'create'])->name('submodules.create');
-        Route::post('/modules/{module}/submodules', [MentorSubmoduleController::class, 'store'])->name('submodules.store');
-        Route::get('/submodules/{submodule}/edit', [MentorSubmoduleController::class, 'edit'])->name('submodules.edit');
-        Route::put('/submodules/{submodule}', [MentorSubmoduleController::class, 'update'])->name('submodules.update');
-        Route::delete('/submodules/{submodule}', [MentorSubmoduleController::class, 'destroy'])->name('submodules.destroy');
+        // Only verified mentors:
+        Route::middleware(['mentor.verified'])->group(function () {
+
+            // modules
+            Route::get('/modules', [MentorModuleController::class, 'index'])
+                ->name('modules.index');
+            Route::get('/modules/create', [MentorModuleController::class, 'create'])
+                ->name('modules.create');
+            Route::post('/modules/store', [MentorModuleController::class, 'store'])
+                ->name('modules.store');
+
+            Route::get('/modules/{id}/edit', [MentorModuleController::class, 'edit'])
+                ->name('modules.edit');
+            Route::post('/modules/{id}/update', [MentorModuleController::class, 'update'])
+                ->name('modules.update');
+            Route::delete('/modules/{id}/delete', [MentorModuleController::class, 'destroy'])
+                ->name('modules.delete');
+
+            // submodules
+            Route::get('/modules/{module_id}/submodules/create', [MentorSubmoduleController::class, 'create'])
+                ->name('submodules.create');
+            Route::post('/modules/{module_id}/submodules/store', [MentorSubmoduleController::class, 'store'])
+                ->name('submodules.store');
+
+            // profile
+            Route::get('/profile', [MentorProfileController::class, 'index'])
+                ->name('profile');
+            Route::post('/profile/update', [MentorProfileController::class, 'update'])
+                ->name('profile.update');
+        });
     });
 
-});
 
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN ROUTES
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
+        // dashboard
+        Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+            ->name('dashboard');
 
+        // users
+        Route::get('/users', [AdminUserController::class, 'index'])
+            ->name('users.index');
+        Route::post('/users/update-role', [AdminUserController::class, 'updateRole'])
+            ->name('users.updateRole');
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN ROUTES (Different Login)
-|--------------------------------------------------------------------------
-*/
+        // categories
+        Route::resource('/categories', AdminCategoryController::class);
 
-Route::prefix('admin')->name('admin.')->group(function () {
+        // modules
+        Route::resource('/modules', AdminModuleController::class);
 
-    // Admin Login (custom)
-    Route::get('/login', [AdminDashboardController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [AdminDashboardController::class, 'login'])->name('login.submit');
+        // submodules
+        Route::resource('/submodules', AdminSubmoduleController::class);
 
-    Route::middleware(['auth:admin'])->group(function () {
+        // mentor verification approval
+        Route::get('/mentor-verification', [AdminVerificationApprovalController::class, 'index'])
+            ->name('verification.index');
+        Route::post('/mentor-verification/approve', [AdminVerificationApprovalController::class, 'approve'])
+            ->name('verification.approve');
+        Route::post('/mentor-verification/reject', [AdminVerificationApprovalController::class, 'reject'])
+            ->name('verification.reject');
 
-        // Dashboard
-        Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | MANAGE CATEGORIES
-        |--------------------------------------------------------------------------
-        */
-        Route::get('/categories', [AdminCategoryController::class, 'index'])->name('categories.index');
-        Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('categories.create');
-        Route::post('/categories', [AdminCategoryController::class, 'store'])->name('categories.store');
-        Route::get('/categories/{category}/edit', [AdminCategoryController::class, 'edit'])->name('categories.edit');
-        Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
-        Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | MANAGE MODULES
-        |--------------------------------------------------------------------------
-        */
-        Route::get('/modules', [AdminModuleController::class, 'index'])->name('modules.index');
-        Route::get('/modules/{module}', [AdminModuleController::class, 'show'])->name('modules.show');
-        Route::delete('/modules/{module}', [AdminModuleController::class, 'destroy'])->name('modules.destroy');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | MANAGE USERS (Mentor + Mentee)
-        |--------------------------------------------------------------------------
-        */
-        Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
-
-        // Approval mentor
-        Route::post('/users/{user}/approve', [AdminUserController::class, 'approveMentor'])->name('users.approve');
-        Route::post('/users/{user}/reject', [AdminUserController::class, 'rejectMentor'])->name('users.reject');
-
-        // Delete user
-        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+        // admin log
+        Route::get('/logs', [AdminLogController::class, 'index'])
+            ->name('logs.index');
     });
 });
-
-
-/*
-|--------------------------------------------------------------------------
-| AUTH ROUTES (Laravel Breeze)
-|--------------------------------------------------------------------------
-*/
-
-require __DIR__.'/auth.php';
-
