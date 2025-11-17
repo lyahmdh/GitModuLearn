@@ -66,8 +66,8 @@
                             {{-- Switch Role (hanya mentor/mentee, bukan admin) --}}
                             @if (Auth::user()->role === 'mentor' || Auth::user()->role === 'mentee')
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('switch.role') }}">
-                                        Switch Role
+                                <a class="dropdown-item" href="{{ route('role.switch') }}">
+                                Switch Role
                                     </a>
                                 </li>
                             @endif

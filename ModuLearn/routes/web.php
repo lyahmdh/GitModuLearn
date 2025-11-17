@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Route;
 // Public Controllers
 // =============================
 use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\PublicModuleController;
+Route::get('/', [PublicModuleController::class, 'index']);
 use App\Http\Controllers\SubmoduleController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\FeedbackController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\RoleSwitchController;
 // =============================
 use App\Http\Controllers\Mentee\MenteeDashboardController;
 use App\Http\Controllers\Mentee\MenteeModuleController;
+Route::get('/mentee/dashboard', [MenteeModuleController::class, 'dashboard']);
 use App\Http\Controllers\Mentee\MenteeSubmoduleController;
 use App\Http\Controllers\Mentee\MenteeProgressController;
 
@@ -25,6 +27,7 @@ use App\Http\Controllers\Mentee\MenteeProgressController;
 // =============================
 use App\Http\Controllers\Mentor\MentorDashboardController;
 use App\Http\Controllers\Mentor\MentorModuleController;
+Route::get('/mentor/dashboard', [MentorModuleController::class, 'dashboard']);
 use App\Http\Controllers\Mentor\MentorSubmoduleController;
 
 // =============================
@@ -36,10 +39,22 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminMentorRequestController;
 use App\Http\Controllers\Admin\AdminCourseController;
 use App\Http\Controllers\Admin\AdminModuleController;
+Route::get('/admin/dashboard', [AdminModuleController::class, 'dashboard']);
 use App\Http\Controllers\Admin\AdminSubmoduleController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminFeedbackController;
 use App\Http\Controllers\Admin\AdminLogController;
+
+use App\Http\Controllers\CourseController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// ROUTES UNTUK COURSE
+Route::resource('courses', CourseController::class);
+Route::get('/pelajaran', [CourseController::class, 'index'])->name('pelajaran.index');
+Route::get('/pelajaran/{id}', [CourseController::class, 'show'])->name('pelajaran.show');
 
 
 // ==========================================
@@ -53,7 +68,9 @@ Route::get('/modules', [ModuleController::class, 'index'])->name('modules.index'
 Route::get('/modules/{module}', [ModuleController::class, 'show'])->name('modules.show');
 
 // Public submodule view (read-only)
-Route::get('/submodules/{submodule}', [SubmoduleController::class, 'show'])
+use App\Http\Controllers\Public\PublicSubmoduleController;
+
+Route::get('/submodules/{submodule}', [PublicSubmoduleController::class, 'show'])
     ->name('submodules.show');
 
 // ==========================================
@@ -94,10 +111,9 @@ require __DIR__ . '/auth.php';
 // ==========================================
 //  ROLE SWITCH (MENTEE <-> MENTOR)
 // ==========================================
-Route::middleware(['auth'])->group(function () {
-    Route::post('/switch-role', [RoleSwitchController::class, 'switch'])
-        ->name('role.switch');
-});
+use App\Http\Controllers\RoleController;
+Route::middleware('auth')->get('/switch-role', [RoleController::class, 'switch'])
+    ->name('role.switch');
 
 
 // ==========================================
