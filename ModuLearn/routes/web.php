@@ -127,25 +127,30 @@ Route::middleware(['auth', 'role:mentee'])
         Route::get('/dashboard', [MenteeDashboardController::class, 'index'])
             ->name('dashboard');
 
+        // LIST MODULE
         Route::get('/modules', [MenteeModuleController::class, 'index'])
             ->name('modules.index');
 
+        // SHOW MODULE (detail + list submodule)
         Route::get('/modules/{module}', [MenteeModuleController::class, 'show'])
             ->name('modules.show');
 
-        Route::get('/submodules/{submodule}', [MenteeSubmoduleController::class, 'show'])
+        // SHOW SUBMODULE (BENAR)
+        Route::get('/modules/{module}/submodules/{submodule}', [MenteeSubmoduleController::class, 'show'])
             ->name('submodules.show');
 
-        Route::post('/submodules/{submodule}/mark-done', [MenteeProgressController::class, 'markDone'])
-            ->name('submodules.markDone');
+        // MARK DONE
+        Route::post('/modules/{module}/submodules/{submodule}/mark-done',
+            [MenteeProgressController::class, 'markDone']
+        )->name('submodules.markDone');
 
+        // REVIEW MODULE
         Route::post('/modules/{module}/review', [ReviewController::class, 'store'])
             ->name('review.store');
 
         Route::post('/feedback', [FeedbackController::class, 'store'])
             ->name('feedback.store');
     });
-
 
 // ==========================================
 //  MENTOR ROUTES
