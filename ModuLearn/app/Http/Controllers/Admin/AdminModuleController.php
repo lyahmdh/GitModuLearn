@@ -8,7 +8,7 @@ use App\Models\Course;
 
 class AdminModuleController extends Controller
 {
-    public function index()
+    public function index() //menampilkan daftar data
     {
         $modules = Module::with('course', 'mentor')->get();
         return view('admin.modules.index', compact('modules'));
