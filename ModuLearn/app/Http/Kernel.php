@@ -78,6 +78,6 @@ class Kernel extends HttpKernel
 
         // Custom middleware for ModuLearn
         'role' => \App\Http\Middleware\RoleMiddleware::class,
-        'mentor.verified' => \App\Http\Middleware\EnsureMentorIsVerified::class,
+        'mentor.approved' => \App\Http\Middleware\MentorApprovedMiddleware::class,
     ];
 }

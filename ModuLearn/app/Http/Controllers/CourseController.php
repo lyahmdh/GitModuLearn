@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Public;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\Module;
 
-class CategoryController extends Controller
+class CourseController extends Controller
 {
     public function index()
     {
