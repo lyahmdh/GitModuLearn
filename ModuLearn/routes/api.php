@@ -3,85 +3,111 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubmoduleController;
+use App\Http\Controllers\SubmoduleProgressController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\MentorVerificationController;
+
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API Routes (modular)
 |--------------------------------------------------------------------------
-| Ini route yang akan dipakai oleh semua developer.
-| Setiap developer punya blok route sendiri agar tidak konflik saat merge.
-|--------------------------------------------------------------------------
+|
+| Struktur: /api/{domain}/...
+| - Public endpoints (no auth) return JSON for listing/search/filter
+| - Authenticated endpoints use 'auth:sanctum'
+|
 */
 
-
 /* ======================================================
-| Developer 1 - User & Mentor Verification
-|======================================================*/
-Route::prefix('user')->group(function () {
+| Developer 2 - Module & Category (API)
+| - GET /api/modules  => browse + supports query params: category, keyword, sort, page
+| - GET /api/modules/search => helper route (same controller)
+| - GET /api/modules/filter => helper route (same controller)
+| - POST /api/modules => create module (mentor only: has_verified_mentor)
+| - PUT /api/modules/{module} => update module (mentor only)
+| - DELETE /api/modules/{module} => delete module (admin only)
+|
+| - GET /api/categories => list categories (public)
+| - POST/PUT/DELETE /api/categories => admin only
+======================================================*/
 
-    // Public user-related API
-    Route::get('/profile', [App\Http\Controllers\UserController::class, 'profile'])->middleware('auth:sanctum');
+// Modules — listing & search (public)
+Route::get('/modules', [ModuleController::class, 'index']);           // supports ?category=&keyword=&sort=
+Route::get('/modules/search', [ModuleController::class, 'index']);    // alias for search
+Route::get('/modules/filter', [ModuleController::class, 'index']);    // alias for filter
 
-    // Mentor Verification - User submit request
-    Route::post('/mentor-verification', [App\Http\Controllers\MentorVerificationController::class, 'submit'])
-        ->middleware('auth:sanctum');
-
+// Module CRUD (authenticated)
+Route::middleware(['auth:sanctum', 'has_verified_mentor'])->group(function () {
+    Route::post('/modules', [ModuleController::class, 'store']);      // create by verified mentor
+    Route::put('/modules/{module}', [ModuleController::class, 'update']);
 });
 
-/* Admin - verify mentor */
-Route::prefix('admin')->middleware(['auth:sanctum', 'is_admin'])->group(function () {
-    Route::get('/mentor-verification', [App\Http\Controllers\AdminMentorVerificationController::class, 'index']);
-    Route::post('/mentor-verification/{id}/approve', [App\Http\Controllers\AdminMentorVerificationController::class, 'approve']);
-    Route::post('/mentor-verification/{id}/reject', [App\Http\Controllers\AdminMentorVerificationController::class, 'reject']);
+// Module delete: admin only
+Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+    Route::delete('/modules/{module}', [ModuleController::class, 'destroy']);
 });
 
-
-
-/* ======================================================
-| Developer 2 - Module & Category
-|======================================================*/
-Route::prefix('modules')->group(function () {
-
-    Route::get('/', [App\Http\Controllers\ModuleController::class, 'index']);
-    Route::post('/', [App\Http\Controllers\ModuleController::class, 'store']);
-    Route::get('/{id}', [App\Http\Controllers\ModuleController::class, 'show']);
-
+// Categories
+Route::get('/categories', [CategoryController::class, 'index']);     // public list
+Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{category}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 });
-
-/* Category */
-Route::prefix('categories')->group(function () {
-
-    Route::get('/', [App\Http\Controllers\CategoryController::class, 'index']);
-    Route::post('/', [App\Http\Controllers\CategoryController::class, 'store']);
-
-});
-
 
 
 /* ======================================================
-| Developer 3 - Submodule & Progress
-|======================================================*/
-Route::prefix('submodules')->group(function () {
+| Developer 3 - Submodule & Progress (API)
+| - Submodule endpoints are nested under modules
+| - CRUD for submodules => verified mentors only
+| - Progress mark => authenticated users (mentee/mentor) via POST
+======================================================*/
 
-    Route::get('/{id}', [App\Http\Controllers\SubmoduleController::class, 'show']);
-    Route::post('/', [App\Http\Controllers\SubmoduleController::class, 'store']);
+// Submodules listing per module (public data, but content viewing may require auth depending frontend)
+Route::get('/modules/{module}/submodules', [SubmoduleController::class, 'index']);
 
+// Submodule CRUD (mentor only, verified)
+Route::middleware(['auth:sanctum', 'has_verified_mentor'])->group(function () {
+    Route::post('/modules/{module}/submodules', [SubmoduleController::class, 'store']);
+    Route::put('/submodules/{submodule}', [SubmoduleController::class, 'update']);
+    Route::delete('/submodules/{submodule}', [SubmoduleController::class, 'destroy']);
 });
 
-/* Progress */
-Route::prefix('progress')->middleware('auth:sanctum')->group(function () {
-    
-    Route::post('/mark', [App\Http\Controllers\ProgressController::class, 'markProgress']);
-
-});
-
+// Progress (mark as done) — authenticated users
+Route::middleware('auth:sanctum')->post('/progress/mark', [SubmoduleProgressController::class, 'markAsDone']);
 
 
 /* ======================================================
-| Developer 4 - Likes
-|======================================================*/
-Route::prefix('likes')->middleware('auth:sanctum')->group(function () {
+| Developer 4 - Likes (API)
+| - Toggle like on module
+| - Authenticated users only (mentee or mentor)
+======================================================*/
+Route::middleware('auth:sanctum')->post('/modules/{module}/like', [LikeController::class, 'toggle']);
 
-    Route::post('/', [App\Http\Controllers\LikeController::class, 'store']);
-    Route::delete('/{id}', [App\Http\Controllers\LikeController::class, 'destroy']);
 
+/* ======================================================
+| Developer 1 - Mentor Verification (API)
+| - User submits verification details/documents (authenticated)
+| - User can view their verification history (authenticated)
+| - Admin approval/reject is done via WEB admin panel (AdminMentorVerificationController)
+======================================================*/
+Route::middleware('auth:sanctum')->group(function () {
+    // submit verification (user)
+    Route::post('/mentor/verification', [MentorVerificationController::class, 'store']);
+
+    // user checks their verifications
+    Route::get('/mentor/verification/me', [MentorVerificationController::class, 'index']);
 });
+
+
+/* ======================================================
+| Extra: utility endpoints (optional)
+| - profile info (for SPA)
+======================================================*/
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return response()->json($request->user());
+});
+

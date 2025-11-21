@@ -1,14 +1,18 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AdminMentorVerificationController;
+use App\Http\Controllers\ModuleController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubmoduleController;
+use App\Http\Controllers\LikeController;
 
 /*
 |--------------------------------------------------------------------------
 | Default Breeze Routes
 |--------------------------------------------------------------------------
 */
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -27,83 +31,77 @@ Route::middleware('auth')->group(function () {
 /*
 |--------------------------------------------------------------------------
 | Custom Routes (Semua Developer)
-|--------------------------------------------------------------------------
-| Semua blok rute developer diletakkan DI BAWAH route bawaan,
-| tetapi DI ATAS auth.php
+| Diletakkan DI BAWAH route bawaan, tetapi DI ATAS auth.php
 |--------------------------------------------------------------------------
 */
 
-
 /* ======================================================
 | Developer 1 - User & Mentor Verification (WEB)
-====================================================== */
-Route::prefix('mentor')->group(function () {
+| - User: view mentor verification form (guest must login to submit)
+| - Admin: approve / reject (admin panel)
+======================================================*/
 
-    // Form pengajuan verifikasi mentor
-    Route::get('/verification', function () {
-        return view('mentor.submit'); // contoh view
-    });
+// Mentor verification UI (show form). Guests can view the form page but submission requires auth.
+Route::get('/mentor/verification', function () {
+    return view('mentor.submit'); // simple blade for upload/submit form (frontend will call API)
+})->name('mentor.verification.form');
 
-    // User submit verifikasi
-    Route::post('/verification', [
-        App\Http\Controllers\MentorVerificationController::class,
-        'submit'
-    ])->middleware('auth');
-});
-
-/* Admin - Approve / Reject Verification */
+// Admin panel for mentor verification (approve/reject) - admin only
 Route::middleware(['auth', 'is_admin'])->group(function () {
-    Route::get('/admin/mentor-verification', [
-        App\Http\Controllers\AdminMentorVerificationController::class,
-        'index'
-    ]);
+    Route::get('/admin/mentor-verification', [AdminMentorVerificationController::class, 'index'])
+         ->name('admin.mentorVerification.index');
 
-    Route::post('/admin/mentor-verification/{id}/approve', [
-        App\Http\Controllers\AdminMentorVerificationController::class,
-        'approve'
-    ]);
+    Route::post('/admin/mentor-verification/{id}/approve', [AdminMentorVerificationController::class, 'approve'])
+         ->name('admin.mentorVerification.approve');
 
-    Route::post('/admin/mentor-verification/{id}/reject', [
-        App\Http\Controllers\AdminMentorVerificationController::class,
-        'reject'
-    ]);
+    Route::post('/admin/mentor-verification/{id}/reject', [AdminMentorVerificationController::class, 'reject'])
+         ->name('admin.mentorVerification.reject');
 });
-
 
 
 /* ======================================================
 | Developer 2 - Module & Category (WEB)
-====================================================== */
-Route::get('/modules', [
-    App\Http\Controllers\ModuleController::class,
-    'index'
-]);
+| - List pages (public/guest)
+| - Detail page for module: require auth to open (clicking a module redirects to login if guest)
+======================================================*/
 
-Route::get('/categories', [
-    App\Http\Controllers\CategoryController::class,
-    'index'
-]);
+// Modules listing page (public: guest can search/filter but not open module)
+Route::get('/modules', function () {
+    return view('modules.index'); // frontend will consume API for data & interactions
+})->name('modules.index')->middleware('guest_access');
 
+// Module detail page: require login (clicking a module should redirect to login for guests)
+Route::get('/modules/{id}', function ($id) {
+    return view('modules.show', ['moduleId' => $id]); // frontend loads data via API
+})->middleware('auth')->name('modules.show');
+
+// Categories listing page (public)
+Route::get('/categories', function () {
+    return view('categories.index');
+})->name('categories.index')->middleware('guest_access');
 
 
 /* ======================================================
 | Developer 3 - Submodule & Progress (WEB)
-====================================================== */
-Route::get('/submodules/{id}', [
-    App\Http\Controllers\SubmoduleController::class,
-    'show'
-])->name('submodule.show');
+| - Submodule page can be same as module detail; detail content fetched by JS/API
+======================================================*/
 
+// If you want a dedicated submodule view:
+Route::get('/modules/{moduleId}/submodules/{submoduleId}', function ($moduleId, $submoduleId) {
+    return view('submodules.show', ['moduleId' => $moduleId, 'submoduleId' => $submoduleId]);
+})->middleware('auth')->name('submodules.show');
 
 
 /* ======================================================
 | Developer 4 - Likes (WEB)
-====================================================== */
-Route::post('/like', [
-    App\Http\Controllers\LikeController::class,
-    'store'
-])->middleware('auth');
+| - Like button in UI will call API; provide optional fallback web post (redirect)
+======================================================*/
 
+// Optional fallback route (POST) — but frontend should use API for likes
+Route::post('/like', function (\Illuminate\Http\Request $request) {
+    // For fallback only: you can redirect or handle via controller
+    return redirect()->back();
+})->middleware('auth')->name('like.fallback');
 
 
 /*
