@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             ModuleSeeder::class,
             SubmoduleSeeder::class,
-            ProgressSeeder::class,
+            SubmoduleProgressSeeder::class,
             LikeSeeder::class,
         ]);
     }
