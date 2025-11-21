@@ -45,4 +45,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function modules()
+    {
+        return $this->hasMany(Module::class, 'mentor_id');
+    }
+    
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+    
+    public function submoduleProgress()
+    {
+        return $this->hasMany(SubmoduleProgress::class);
+    }
+    
+    public function mentorVerifications()
+    {
+        return $this->hasMany(MentorVerification::class);
+    }
+        
 }
