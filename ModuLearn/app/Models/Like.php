@@ -15,10 +15,6 @@ class Like extends Model
 
     public $timestamps = true; // karena tabel memiliki created_at
 
-    // ============================
-    // RELATIONSHIPS
-    // ============================
-
     // 1 like dimiliki oleh 1 user
     public function user()
     {
