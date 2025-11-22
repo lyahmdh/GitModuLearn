@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Http\API\Controllers;
-
+namespace App\Http\Controllers\API;
 use App\Models\Module;
 use App\Services\ModuleService;
 use Illuminate\Http\Request;
