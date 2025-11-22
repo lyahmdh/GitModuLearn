@@ -33,7 +33,13 @@ class Kernel extends HttpKernel{
         ],
     ];
 
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+
+        'is_admin' => \App\Http\Middleware\IsAdmin::class,
         'is_mentor' => \App\Http\Middleware\IsMentor::class,
         'is_mentee' => \App\Http\Middleware\IsMentee::class,
         'is_admin' => \App\Http\Middleware\IsAdmin::class,
