@@ -14,9 +14,8 @@ class LikeFactory extends Factory
     public function definition()
     {
         return [
-            'user_id' => User::inRandomOrder()->first()->id ?? User::factory(),
-            'module_id' => Module::inRandomOrder()->first()->id ?? Module::factory(),
-            'created_at' => now(),
+            'user_id' => User::factory(),
+            'module_id' => Module::factory(),
         ];
-    }
+    }    
 }
