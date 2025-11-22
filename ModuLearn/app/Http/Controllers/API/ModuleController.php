@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
 use App\Models\Module;
 use App\Services\ModuleService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ModuleController extends Controller
 {

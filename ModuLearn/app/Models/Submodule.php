@@ -50,7 +50,7 @@ class Submodule extends Model
     /**
      * Check if a given user has marked this submodule as done.
      *
-     * @param \App\Models\User|int $user
+     * @param \app\Models\User|int $user
      * @return bool
      */
     public function isDoneBy($user): bool

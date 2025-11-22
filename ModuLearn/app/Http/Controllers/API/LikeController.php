@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
 use Illuminate\Http\Request;
 use App\Services\LikeService;
+use App\Http\Controllers\Controller;
 
 class LikeController extends Controller
 {
