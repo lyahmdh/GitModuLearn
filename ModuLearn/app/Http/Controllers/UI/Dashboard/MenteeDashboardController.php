@@ -60,6 +60,6 @@ class MenteeDashboardController extends Controller
 
     public function editProfile()
     {
-        return view('dashboard.mentee.profile.edit', ['user' => Auth::user()]);
+        return view('dashboard.mentee.profile', ['user' => Auth::user()]);
     }
 }
