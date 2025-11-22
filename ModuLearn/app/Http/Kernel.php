@@ -45,6 +45,5 @@ class Kernel extends HttpKernel
         'is_mentee' => \App\Http\Middleware\IsMentee::class,
         'verified_mentor' => \App\Http\Middleware\HasVerifiedMentor::class,
         'guest_access' => \App\Http\Middleware\GuestAccess::class,
-        'has_verified_mentor' => \App\Http\Middleware\HasVerifiedMentor::class,
     ];
 }
