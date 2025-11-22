@@ -34,7 +34,7 @@
                         {{ Auth::user()->name }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
-                        <a href="{{ route('profile.edit') }}" class="dropdown-item">Profile</a>
+                        <a href="{{ route('dashboard.mentee.profile') }}" class="dropdown-item">Profile</a>
                         <hr class="dropdown-divider">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
