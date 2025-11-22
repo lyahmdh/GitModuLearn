@@ -28,7 +28,7 @@
         <div class="col-md-4 mb-3">
             <div class="card shadow-sm p-3">
                 <h5 class="fw-bold">Modul Disukai</h5>
-                <p class="fs-4">{{ $likedCount }}</p>
+                <p class="fs-4">{{ $totalLiked }}</p>
             </div>
         </div>
 

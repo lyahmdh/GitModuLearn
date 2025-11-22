@@ -56,7 +56,7 @@
             <!-- Asal Institusi -->
             <div class="mb-4">
                 <label for="institusi" class="block mb-1 font-medium text-gray-700">Asal Institusi</label>
-                <select id="institusi" name="institusi" required class="w-full border rounded px-3 py-2">
+                <select id="institutions" name="institutions" required class="w-full border rounded px-3 py-2">
                     <option value="">Pilih institusi</option>
                     <option value="Universitas A">Universitas A</option>
                     <option value="Universitas B">Universitas B</option>
@@ -67,7 +67,7 @@
             <!-- Bidang yang diminati -->
             <div class="mb-4">
                 <label for="bidang" class="block mb-1 font-medium text-gray-700">Bidang yang diminati</label>
-                <select id="bidang" name="bidang" required class="w-full border rounded px-3 py-2">
+                <select id="interest_fields" name="interest_fields" required class="w-full border rounded px-3 py-2">
                     <option value="">Pilih bidang</option>
                     <option value="Teknologi">Teknologi</option>
                     <option value="Bisnis">Bisnis</option>

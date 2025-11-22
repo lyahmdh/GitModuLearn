@@ -31,4 +31,10 @@ class LikeService
             'message' => 'Module liked successfully'
         ];
     }
+
+    public function getUserLikes(int $userId)
+    {
+        // Mengambil semua like user
+        return Like::where('user_id', $userId)->get();
+    }
 }
