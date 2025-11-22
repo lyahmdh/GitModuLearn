@@ -9,10 +9,17 @@ class HasVerifiedMentor
 {
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user() && $request->user()->role === 'mentor') {
-            return $next($request);
+        if (!$request->user() || $request->user()->role !== 'mentor') {
+            abort(403, 'Anda bukan mentor.');
         }
-
-        abort(403, 'Anda belum diverifikasi sebagai mentor.');
+        
+        $verification = $request->user()->mentorVerifications()->latest()->first();
+        
+        if (!$verification || $verification->verification_status !== 'approved') {
+            abort(403, 'Akun Anda belum diverifikasi sebagai mentor.');
+        }
+        
+        return $next($request);
+        
     }
 }

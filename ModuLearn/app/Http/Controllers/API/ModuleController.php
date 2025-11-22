@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\API\Controllers;
 
 use App\Models\Module;
 use App\Services\ModuleService;

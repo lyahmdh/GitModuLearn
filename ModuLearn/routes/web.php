@@ -2,25 +2,85 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AdminMentorVerificationController;
-use App\Http\Controllers\ModuleController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SubmoduleController;
-use App\Http\Controllers\LikeController;
+use App\Http\Controllers\API\AdminMentorVerificationController;
+use App\Http\Controllers\API\ModuleController;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\SubmoduleController;
+use App\Http\Controllers\API\LikeController;
+use App\Http\Controllers\UI\LandingController;
+use App\Http\Controllers\UI\LessonController;
+use App\Http\Controllers\UI\Dashboard\MenteeDashboardController;
+use App\Http\Controllers\UI\Dashboard\MentorDashboardController;
+use App\Http\Controllers\UI\Dashboard\AdminDashboardController;
 
 /*
 |--------------------------------------------------------------------------
 | Default Breeze Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('welcome');
-});
+/*
+|--------------------------------------------------------------------------
+| Landing Page
+|--------------------------------------------------------------------------
+*/
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+    $user = auth()->user();
 
+    if ($user->role === 'admin') {
+        return redirect()->route('dashboard.admin');
+    }
+
+    if ($user->role === 'mentor_verified') {
+        return redirect()->route('dashboard.mentor');
+    }
+
+    // default mentee
+    return redirect()->route('dashboard.mentee');
+})->middleware('auth')->name('dashboard');
+
+/*
+|--------------------------------------------------------------------------
+| Dashboard (user harus login)
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth'])->group(function () {
+
+    // mentee dashboard
+    Route::middleware('is_mentee')->group(function () {
+        Route::get('/dashboard/mentee', [MenteeDashboardController::class, 'index'])->name('dashboard.mentee');
+        Route::get('/dashboard/mentee/likes', [MenteeDashboardController::class, 'likedModules'])->name('dashboard.mentee.likes');
+        Route::get('/dashboard/mentee/progress', [MenteeDashboardController::class, 'progress'])->name('dashboard.mentee.progress');
+        Route::get('/dashboard/mentee/profile', [MenteeDashboardController::class, 'editProfile'])->name('dashboard.mentee.profile');
+    });
+
+    // mentor dashboard
+    Route::middleware('verified_mentor')->group(function () {
+        Route::get('/dashboard/mentor', [MentorDashboardController::class, 'index'])->name('dashboard.mentor');
+        Route::get('/dashboard/mentor/modules', [MentorDashboardController::class, 'modules'])->name('dashboard.mentor.modules');
+        Route::get('/dashboard/mentor/modules/create', [MentorDashboardController::class, 'createModule'])->name('dashboard.mentor.modules.create');
+        Route::get('/dashboard/mentor/modules/{id}/edit', [MentorDashboardController::class, 'editModule'])->name('dashboard.mentor.modules.edit');
+        Route::get('/dashboard/mentor/likes', [MentorDashboardController::class, 'likes'])->name('dashboard.mentor.likes');
+    });
+
+    // admin dashboard
+    Route::middleware('is_admin')->group(function () {
+        Route::get('/dashboard/admin', [AdminDashboardController::class, 'index'])->name('dashboard.admin');
+        Route::get('/dashboard/admin/users', [AdminDashboardController::class, 'users'])->name('dashboard.admin.users');
+        Route::get('/dashboard/admin/modules', [AdminDashboardController::class, 'modules'])->name('dashboard.admin.modules');
+        Route::get('/dashboard/admin/categories', [AdminDashboardController::class, 'categories'])->name('dashboard.admin.categories');
+        Route::get('/dashboard/admin/mentor-approval', [AdminDashboardController::class, 'mentorApproval'])->name('dashboard.admin.mentorApproval');
+    });
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Profile
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -102,6 +162,25 @@ Route::post('/like', function (\Illuminate\Http\Request $request) {
     // For fallback only: you can redirect or handle via controller
     return redirect()->back();
 })->middleware('auth')->name('like.fallback');
+
+
+/*
+|--------------------------------------------------------------------------
+| Pelajaran / Modul / Submodul (UI)
+|--------------------------------------------------------------------------
+*/
+// list modul (public)
+Route::get('/pelajaran', [LessonController::class, 'index'])->name('pelajaran.index');
+
+// modul detail (login required)
+Route::get('/pelajaran/modul/{id}', [LessonController::class, 'showModule'])
+    ->middleware('auth')
+    ->name('pelajaran.module.show');
+
+// submodul detail (login required)
+Route::get('/pelajaran/submodul/{id}', [LessonController::class, 'showSubmodule'])
+    ->middleware('auth')
+    ->name('pelajaran.submodule.show');
 
 
 /*

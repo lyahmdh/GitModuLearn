@@ -26,7 +26,7 @@ use App\Http\Controllers\MentorVerificationController;
 | - GET /api/modules  => browse + supports query params: category, keyword, sort, page
 | - GET /api/modules/search => helper route (same controller)
 | - GET /api/modules/filter => helper route (same controller)
-| - POST /api/modules => create module (mentor only: has_verified_mentor)
+| - POST /api/modules => create module (mentor only: verified_mentor)
 | - PUT /api/modules/{module} => update module (mentor only)
 | - DELETE /api/modules/{module} => delete module (admin only)
 |
@@ -40,7 +40,7 @@ Route::get('/modules/search', [ModuleController::class, 'index']);    // alias f
 Route::get('/modules/filter', [ModuleController::class, 'index']);    // alias for filter
 
 // Module CRUD (authenticated)
-Route::middleware(['auth:sanctum', 'has_verified_mentor'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified_mentor'])->group(function () {
     Route::post('/modules', [ModuleController::class, 'store']);      // create by verified mentor
     Route::put('/modules/{module}', [ModuleController::class, 'update']);
 });
@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
 Route::get('/modules/{module}/submodules', [SubmoduleController::class, 'index']);
 
 // Submodule CRUD (mentor only, verified)
-Route::middleware(['auth:sanctum', 'has_verified_mentor'])->group(function () {
+Route::middleware(['auth:sanctum', 'verified_mentor'])->group(function () {
     Route::post('/modules/{module}/submodules', [SubmoduleController::class, 'store']);
     Route::put('/submodules/{submodule}', [SubmoduleController::class, 'update']);
     Route::delete('/submodules/{submodule}', [SubmoduleController::class, 'destroy']);
