@@ -34,7 +34,7 @@
                         {{ Auth::user()->name }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-end">
-                        <a href="{{ route('profile.edit') }}" class="dropdown-item">Profile</a>
+                        <a href="{{ route('dashboard.mentee.profile') }}" class="dropdown-item">Profile</a>
                         <hr class="dropdown-divider">
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
@@ -48,11 +48,7 @@
     </nav>
 
     {{-- Sidebar --}}
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
-
-        <a href="#" class="brand-link text-center">
-            <span class="brand-text fw-bold">Mentoring</span>
-        </a>
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">   
 
         <div class="sidebar">
 
@@ -64,7 +60,7 @@
                         <li class="nav-item">
                             <a href="{{ route('dashboard.mentee') }}" class="nav-link">
                                 <i class="nav-icon fas fa-home"></i>
-                                <p>Dashboard Mentee</p>
+                                <p>Profile</p>
                             </a>
                         </li>
 

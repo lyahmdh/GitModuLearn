@@ -27,6 +27,22 @@
                     value="{{ auth()->user()->email }}" required>
             </div>
 
+            {{-- INSTITUSI --}}
+            <div class="mb-3">
+                <label class="form-label">Institusi</label>
+                <input type="text" name="institution" 
+                    class="form-control" 
+                    value="{{ auth()->user()->institution }}" required>
+            </div>
+
+            {{-- Interest Field --}}
+            <div class="mb-3">
+                <label class="form-label">Interest Field</label>
+                <input type="text" name="institution" 
+                    class="form-control" 
+                    value="{{ auth()->user()->interest_field }}" required>
+            </div>
+
             {{-- SUBMIT --}}
             <button class="btn btn-primary px-4">Simpan Perubahan</button>
 
