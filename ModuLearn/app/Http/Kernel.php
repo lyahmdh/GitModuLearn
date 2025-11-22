@@ -4,8 +4,7 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-class Kernel extends HttpKernel
-{
+class Kernel extends HttpKernel{
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         \Illuminate\Http\Middleware\HandleCors::class,
@@ -35,15 +34,14 @@ class Kernel extends HttpKernel
     ];
 
     protected $routeMiddleware = [
+        'is_mentor' => \App\Http\Middleware\IsMentor::class,
+        'is_mentee' => \App\Http\Middleware\IsMentee::class,
+        'is_admin' => \App\Http\Middleware\IsAdmin::class,
+        'verified_mentor' => \App\Http\Middleware\HasVerifiedMentor::class,
+        'guest_access' => \App\Http\Middleware\GuestAccess::class,
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-
-        'is_admin' => \App\Http\Middleware\IsAdmin::class,
-        'is_mentor' => \App\Http\Middleware\IsMentor::class,
-        'is_mentee' => \App\Http\Middleware\IsMentee::class,
-        'verified_mentor' => \App\Http\Middleware\HasVerifiedMentor::class,
-        'guest_access' => \App\Http\Middleware\GuestAccess::class,
     ];
 }

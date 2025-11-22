@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\API\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Models\MentorVerification;
 use Illuminate\Http\Request;
 use App\Services\MentorVerificationService;
+use App\Http\Controllers\Controller;
 
 class MentorVerificationController extends Controller
 {

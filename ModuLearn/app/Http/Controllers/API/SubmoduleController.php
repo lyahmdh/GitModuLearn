@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\API\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Models\Submodule;
 use App\Models\Module;
 use Illuminate\Http\Request;
 use App\Services\SubmoduleService;
+use App\Http\Controllers\Controller;
 
 class SubmoduleController extends Controller
 {
