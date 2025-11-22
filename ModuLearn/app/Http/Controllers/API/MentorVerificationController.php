@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\API;
 use App\Models\MentorVerification;
 use Illuminate\Http\Request;
 use App\Services\MentorVerificationService;
