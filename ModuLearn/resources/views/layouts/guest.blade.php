@@ -16,8 +16,7 @@
 
             {{-- Logo --}}
             <a href="/" class="flex items-center font-bold text-lg">
-                <img src="/logo.png" alt="Modulearn" class="h-8 mr-2">
-                Modulearn
+                <img src="assets/logo.png" class="h-8 mr-2">
             </a>
 
             {{-- Navlinks --}}
@@ -28,8 +27,8 @@
 
             {{-- Auth Buttons --}}
             <div class="flex gap-3">
-                <a href="/login" class="text-gray-700 hover:text-blue-500">Login</a>
-                <a href="/register" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                <a href="{{ route('login') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Login</a>
+                <a href="{{ route('register') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                     Sign Up
                 </a>
             </div>
