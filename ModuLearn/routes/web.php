@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\API\AdminMentorVerificationController;
@@ -13,33 +15,47 @@ use App\Http\Controllers\UI\Dashboard\MenteeDashboardController;
 use App\Http\Controllers\UI\Dashboard\MentorDashboardController;
 use App\Http\Controllers\UI\Dashboard\AdminDashboardController;
 
+
 /*
 |--------------------------------------------------------------------------
-| Default Breeze Routes
+| Login dan Register
 |--------------------------------------------------------------------------
 */
+
+// Login
+Route::get('/login', [AuthenticatedSessionController::class, 'create'])
+    ->middleware('guest')
+    ->name('login');
+
+// Register
+Route::get('/register', [RegisteredUserController::class, 'create'])
+    ->middleware('guest')
+    ->name('register');
+
+
 /*
 |--------------------------------------------------------------------------
 | Landing Page
 |--------------------------------------------------------------------------
 */
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('/landing-login', [LandingController::class, 'landingLogin'])->name('landing-login');
 
 
-Route::get('/dashboard', function () {
-    $user = auth()->user();
+// Route::get('/dashboard', function () {
+//     $user = auth()->user();
 
-    if ($user->role === 'admin') {
-        return redirect()->route('dashboard.admin');
-    }
+//     if ($user->role === 'admin') {
+//         return redirect()->route('dashboard.admin');
+//     }
 
-    if ($user->role === 'mentor_verified') {
-        return redirect()->route('dashboard.mentor');
-    }
+//     if ($user->role === 'mentor_verified') {
+//         return redirect()->route('dashboard.mentor');
+//     }
 
-    // default mentee
-    return redirect()->route('dashboard.mentee');
-})->middleware('auth')->name('dashboard');
+//     // default mentee
+//     return redirect()->route('dashboard.mentee');
+// })->middleware('auth')->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------

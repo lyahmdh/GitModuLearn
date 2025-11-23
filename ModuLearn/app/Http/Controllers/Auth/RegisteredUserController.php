@@ -49,6 +49,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return view('layouts.app'); // redirect ke landing page
+        return redirect()->route('landing-login'); // redirect ke landing page
     }
 }
