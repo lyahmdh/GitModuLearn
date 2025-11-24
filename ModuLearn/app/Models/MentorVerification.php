@@ -11,9 +11,10 @@ class MentorVerification extends Model
 
     protected $fillable = [
         'user_id',
-        'verification_status',
-        'document_path',
+        'file_path',
+        'status',
     ];
+  
 
     public function user()
     {

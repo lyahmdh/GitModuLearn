@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+
 
 class User extends Authenticatable
 {
@@ -49,6 +51,18 @@ class User extends Authenticatable
         ];
     }
 
+
+
+    public function getProfilePhotoUrlAttribute()
+    {
+        if ($this->profile_photo_path) {
+            return Storage::url($this->profile_photo_path);
+        }
+    
+        return asset('assets/default-profile.png');
+    }
+    
+
     public function modules()
     {
         return $this->hasMany(Module::class, 'mentor_id');
@@ -64,9 +78,12 @@ class User extends Authenticatable
         return $this->hasMany(SubmoduleProgress::class);
     }
     
+    use Notifiable;
+
+    // relasi ke mentor verifications
     public function mentorVerifications()
     {
-        return $this->hasMany(MentorVerification::class);
+        return $this->hasMany(MentorVerification::class, 'user_id');
     }
         
 }

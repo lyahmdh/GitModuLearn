@@ -13,14 +13,13 @@
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
 
             {{-- Logo --}}
-            <a href="/dashboard" class="flex items-center font-bold text-lg">
+            <a href="/landing-login" class="flex items-center font-bold text-lg">
                 <img src="assets/logo.png" alt="Modulearn" class="h-8 mr-2">
-                Modulearn
             </a>
 
             {{-- Nav Links --}}
             <div class="flex gap-6">
-                <a href="/dashboard" class="hover:text-blue-500">Beranda</a>
+                <a href="/landing-login" class="hover:text-blue-500">Beranda</a>
                 <a href="/pelajaran" class="hover:text-blue-500">Pelajaran</a>
             </div>
 
@@ -37,8 +36,11 @@
 
                 {{-- Profile Picture --}}
                 <a href="/dashboard">
-                    <img src="{{ Auth::user()->profile_photo_url }}" 
+                <img src="{{ auth()->user()->profile_photo_path 
+                        ? asset(auth()->user()->profile_photo_path) 
+                        : asset('assets/default-profile.png') }}"
                         class="h-10 w-10 rounded-full object-cover">
+
                 </a>
             </div>
 
