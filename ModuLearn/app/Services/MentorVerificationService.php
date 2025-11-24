@@ -11,11 +11,11 @@ class MentorVerificationService
     /**
      * User mengirim request untuk jadi mentor
      */
-    public function submitRequest(User $user, array $data)
+    public function submitRequest(User $user, string $documentUrl): MentorVerification
     {
         return MentorVerification::create([
             'user_id' => $user->id,
-            'document_url' => $data['document_url'],
+            'document_url' => $documentUrl,
             'status' => 'pending',
         ]);
     }
@@ -23,7 +23,7 @@ class MentorVerificationService
     /**
      * Admin menyetujui permintaan
      */
-    public function approveVerification(MentorVerification $verification)
+    public function approveVerification(MentorVerification $verification): MentorVerification
     {
         return DB::transaction(function () use ($verification) {
             $verification->update([
@@ -31,9 +31,15 @@ class MentorVerificationService
             ]);
 
             // Update role user menjadi mentor
-            $verification->user->update([
-                'role' => 'mentor',
-            ]);
+            $user = $verification->user;
+            $user->update(['role' => 'mentor']);
+
+            // refresh session jika user ini sedang login
+            if (auth()->id() === $user->id) {
+                auth()->user()->role = 'mentor';
+                session()->put('role', 'mentor');
+            }
+
 
             return $verification;
         });
@@ -42,11 +48,23 @@ class MentorVerificationService
     /**
      * Admin menolak permintaan
      */
-    public function rejectVerification(MentorVerification $verification, string $reason = null)
+    public function rejectVerification(MentorVerification $verification, string $reason = null): MentorVerification
     {
-        return $verification->update([
+        $verification->update([
             'status' => 'rejected',
             'reject_reason' => $reason,
         ]);
+
+        return $verification;
+    }
+
+    /**
+     * Ambil semua request verifikasi mentor yang statusnya pending
+     */
+    public function getPending()
+    {
+        return MentorVerification::with('user')
+            ->where('status', 'pending')
+            ->get();
     }
 }

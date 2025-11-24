@@ -1,47 +1,32 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
+
+@section('title', 'Verifikasi Mentor')
 
 @section('content')
 <div class="container py-4">
 
-    <h2 class="fw-bold mb-4">Buat Modul Baru</h2>
+    <h3 class="fw-bold mb-4">Ajukan Verifikasi Mentor</h3>
 
     <div class="card shadow-sm p-4">
 
-        <form method="POST" action="{{ route('mentor.modules.store') }}" enctype="multipart/form-data">
+        {{-- ALERT --}}
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+
+        <p class="mb-3">
+            Unggah dokumen verifikasi (KTP, CV, atau Sertifikat).
+        </p>
+
+        <form method="POST" action="{{ route('mentor.verification.store') }}" enctype="multipart/form-data">
             @csrf
 
-            {{-- JUDUL --}}
             <div class="mb-3">
-                <label class="form-label">Judul Modul</label>
-                <input type="text" name="title" class="form-control" required>
+                <label class="form-label">Upload Dokumen</label>
+                <input type="file" name="document" class="form-control" required>
             </div>
 
-            {{-- DESKRIPSI --}}
-            <div class="mb-3">
-                <label class="form-label">Deskripsi</label>
-                <textarea name="description" class="form-control" rows="4" required></textarea>
-            </div>
-
-            {{-- KATEGORI --}}
-            <div class="mb-3">
-                <label class="form-label">Kategori</label>
-                <select name="category_id" class="form-select" required>
-                    <option value="">Pilih kategori</option>
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}">{{ $cat->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- THUMBNAIL --}}
-            <div class="mb-3">
-                <label class="form-label">Thumbnail</label>
-                <input type="file" name="thumbnail" class="form-control" required>
-            </div>
-
-            {{-- SUBMIT --}}
-            <button class="btn btn-primary px-4">Submit Modul</button>
-
+            <button type="submit" class="btn btn-primary">Submit</button>
         </form>
 
     </div>

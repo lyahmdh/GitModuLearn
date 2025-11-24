@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Models\MentorVerification;
 use Illuminate\Http\Request;
 use App\Services\MentorVerificationService;
+use App\Http\Controllers\Controller;
 
 class AdminMentorVerificationController extends Controller
 {
@@ -29,14 +30,14 @@ class AdminMentorVerificationController extends Controller
     public function approve($id)
     {
         $verification = MentorVerification::findOrFail($id);
-
         $this->service->approveVerification($verification);
-
+    
         return response()->json([
             'message' => 'Verifikasi mentor disetujui.',
             'data' => $verification
         ]);
     }
+    
 
     /**
      * Admin menolak verifikasi mentor

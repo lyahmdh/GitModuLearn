@@ -47,6 +47,30 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="institutions" :value="__('Institusi')" />
+            <select id="institutions" name="institutions"
+                class="mt-1 block w-full border rounded px-3 py-2">
+                <option value="">Pilih institusi</option>
+                <option value="Universitas A" {{ $user->institutions == 'Universitas A' ? 'selected' : '' }}>Universitas A</option>
+                <option value="Universitas B" {{ $user->institutions == 'Universitas B' ? 'selected' : '' }}>Universitas B</option>
+                <option value="Sekolah C" {{ $user->institutions == 'Sekolah C' ? 'selected' : '' }}>Sekolah C</option>
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('institutions')" />
+        </div>
+
+        <div>
+            <x-input-label for="interest_fields" :value="__('Bidang yang diminati')" />
+            <select id="interest_fields" name="interest_fields"
+                class="mt-1 block w-full border rounded px-3 py-2">
+                <option value="">Pilih bidang</option>
+                <option value="Teknologi" {{ $user->interest_fields == 'Teknologi' ? 'selected' : '' }}>Teknologi</option>
+                <option value="Bisnis" {{ $user->interest_fields == 'Bisnis' ? 'selected' : '' }}>Bisnis</option>
+                <option value="Desain" {{ $user->interest_fields == 'Desain' ? 'selected' : '' }}>Desain</option>
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('interest_fields')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

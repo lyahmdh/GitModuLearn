@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
 use App\Models\Module;
 use App\Services\ModuleService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ModuleController extends Controller
 {
@@ -14,37 +17,59 @@ class ModuleController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    // Tampilkan semua modul untuk admin dashboard
+    public function index(Request $request)
     {
-        return response()->json($this->service->getAll());
+        $modules = $this->service->getAll();
+
+        return view('dashboard.admin.modules', compact('modules'));
     }
 
+    /**
+     * Simpan modul baru
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'mentor_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
+        $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
+            'category_id' => 'required|integer|exists:categories,id',
+            'thumbnail' => 'required|image|max:2048',
         ]);
 
-        return response()->json($this->service->store($validated));
-    }
+        // Upload thumbnail
+        $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
 
-    public function update(Request $request, Module $module)
-    {
-        $validated = $request->validate([
-            'mentor_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:categories,id',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+        // Simpan modul via service
+        $module = $this->service->createModule([
+            'mentor_id' => Auth::id(),
+            'title' => $request->title,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'thumbnail' => $thumbnailPath,
         ]);
 
-        return response()->json($this->service->update($module, $validated));
+        return redirect()->route('dashboard.mentor.modules.my-modules')
+                         ->with('success', 'Modul berhasil dibuat!');
     }
 
-    public function destroy(Module $module)
+    // Hapus modul
+    public function destroy(Module $module, Request $request)
     {
-        return response()->json($this->service->delete($module));
+        try {
+            $this->service->delete($module);
+
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Modul berhasil dihapus']);
+            }
+
+            return redirect()->back()->with('success', 'Modul berhasil dihapus!');
+        } catch (\Exception $e) {
+            if ($request->wantsJson()) {
+                return response()->json(['message' => 'Gagal menghapus modul', 'error' => $e->getMessage()], 500);
+            }
+
+            return redirect()->back()->with('error', 'Gagal menghapus modul: ' . $e->getMessage());
+        }
     }
 }
