@@ -30,14 +30,14 @@ class AdminMentorVerificationController extends Controller
     public function approve($id)
     {
         $verification = MentorVerification::findOrFail($id);
-
         $this->service->approveVerification($verification);
-
+    
         return response()->json([
             'message' => 'Verifikasi mentor disetujui.',
             'data' => $verification
         ]);
     }
+    
 
     /**
      * Admin menolak verifikasi mentor

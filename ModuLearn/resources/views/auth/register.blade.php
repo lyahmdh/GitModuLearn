@@ -59,9 +59,10 @@
                 <select id="institusi" name="institusi" required
                     class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     <option value="">Pilih institusi</option>
-                    <option value="Universitas A">Universitas A</option>
-                    <option value="Universitas B">Universitas B</option>
-                    <option value="Sekolah C">Sekolah C</option>
+                    <option value="Universitas Brawijaya">Universitas Brawijaya</option>
+                    <option value="Universitas Indonesia">Universitas Indonesia</option>
+                    <option value="Institut Teknologi Bandung">Institut Teknologi Bandung</option>
+                    <option value="Universitas Gadjah Mada">Universitas Gadjah Mada</option>
                 </select>
             </div>
 
@@ -73,7 +74,10 @@
                     <option value="">Pilih bidang</option>
                     <option value="Teknologi">Teknologi</option>
                     <option value="Bisnis">Bisnis</option>
-                    <option value="Desain">Desain</option>
+                    <option value="Ekonomi">Ekonomi</option>
+                    <option value="Sastra">Sastra</option>
+                    <option value="Ilmu Budaya">Ilmu Budaya</option>
+                    <option value="Ilmu Politik">Ilmu Politik</option>
                 </select>
             </div>
 

@@ -21,13 +21,21 @@ class CategoryController extends Controller
         return response()->json($this->service->getAll());
     }
 
+    /**
+     * Simpan kategori baru
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255|unique:categories,name',
         ]);
 
-        return response()->json($this->service->store($validated));
+        $category = Category::create($validated);
+
+        return response()->json([
+            'message' => 'Kategori berhasil ditambahkan',
+            'data' => $category
+        ]);
     }
 
     public function update(Request $request, Category $category)
@@ -39,8 +47,22 @@ class CategoryController extends Controller
         return response()->json($this->service->update($category, $validated));
     }
 
+    /**
+     * Hapus kategori
+     */
     public function destroy(Category $category)
     {
-        return response()->json($this->service->delete($category));
+        try {
+            $category->delete();
+            return response()->json([
+                'message' => 'Kategori berhasil dihapus'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Gagal menghapus kategori',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
+
 }

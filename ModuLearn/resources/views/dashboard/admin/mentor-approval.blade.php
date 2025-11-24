@@ -17,30 +17,55 @@
 
         <tbody>
 
-            @foreach($requests as $req)
-            <tr>
-                <td>{{ $req->user->name }}</td>
-                <td>{{ $req->user->email }}</td>
-                <td>
-                    <a href="{{ asset('storage/' . $req->document) }}" target="_blank" class="btn btn-info btn-sm">
-                        Lihat
-                    </a>
-                </td>
-                <td class="d-flex gap-2">
-                    
-                    <form method="POST" action="{{ route('admin.mentorVerification.approve', $req->id) }}">
-                        @csrf
-                        <button class="btn btn-success btn-sm">Approve</button>
-                    </form>
+        @foreach($requests as $req)
+        <tr id="request-{{ $req->id }}">
+            <td>{{ $req->user->name }}</td>
+            <td>{{ $req->user->email }}</td>
+            <td>
+                <a href="{{ asset('storage/' . $req->document) }}" target="_blank" class="btn btn-info btn-sm">
+                    Lihat
+                </a>
+            </td>
+            <td class="d-flex gap-2">
+                <button class="btn btn-success btn-sm approve-btn" data-id="{{ $req->id }}">Approve</button>
+                <button class="btn btn-danger btn-sm reject-btn" data-id="{{ $req->id }}">Reject</button>
+            </td>
+        </tr>
+        @endforeach
 
-                    <form method="POST" action="{{ route('admin.mentorVerification.reject', $req->id) }}">
-                        @csrf
-                        <button class="btn btn-danger btn-sm">Reject</button>
-                    </form>
+        <script>
+        document.querySelectorAll('.approve-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                if(!confirm('Yakin ingin approve request ini?')) return;
 
-                </td>
-            </tr>
-            @endforeach
+                const id = button.getAttribute('data-id');
+
+                try {
+                    const res = await fetch(`/admin/mentor-verification/${id}/approve`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                    });
+
+                    const result = await res.json();
+
+                    if(res.ok){
+                        alert(result.message || 'Request berhasil diapprove!');
+                        document.getElementById(`request-${id}`).remove(); // hapus row
+                    } else {
+                        alert(result.message || 'Gagal approve request.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Terjadi error. Coba lagi.');
+                }
+            });
+        });
+        </script>
+
 
         </tbody>
     </table>
