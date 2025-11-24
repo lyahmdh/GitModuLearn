@@ -1,52 +1,97 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Daftar Akun</h2>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        {{-- Error Messages --}}
+        @if ($errors->any())
+            <div class="bg-red-100 text-red-700 p-3 mb-4 rounded">
+                <ul class="list-disc pl-5">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+            <!-- Name -->
+            <div class="mb-4">
+                <label for="name" class="block font-medium text-gray-700 mb-1">Nama</label>
+                <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+            </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+            <!-- Email -->
+            <div class="mb-4">
+                <label for="email" class="block font-medium text-gray-700 mb-1">Email</label>
+                <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+            </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <!-- Password -->
+            <div class="mb-4">
+                <label for="password" class="block font-medium text-gray-700 mb-1">Password</label>
+                <input id="password" type="password" name="password" required
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+            </div>
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            <!-- Confirm Password -->
+            <div class="mb-4">
+                <label for="password_confirmation" class="block font-medium text-gray-700 mb-1">Konfirmasi Password</label>
+                <input id="password_confirmation" type="password" name="password_confirmation" required
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+            </div>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+            <!-- Asal Institusi -->
+            <div class="mb-4">
+                <label for="institusi" class="block font-medium text-gray-700 mb-1">Asal Institusi</label>
+                <select id="institusi" name="institusi" required
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                    <option value="">Pilih institusi</option>
+                    <option value="Universitas Brawijaya">Universitas Brawijaya</option>
+                    <option value="Universitas Indonesia">Universitas Indonesia</option>
+                    <option value="Institut Teknologi Bandung">Institut Teknologi Bandung</option>
+                    <option value="Universitas Gadjah Mada">Universitas Gadjah Mada</option>
+                </select>
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
+            <!-- Bidang yang diminati -->
+            <div class="mb-4">
+                <label for="bidang" class="block font-medium text-gray-700 mb-1">Bidang yang diminati</label>
+                <select id="bidang" name="bidang" required
+                    class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
+                    <option value="">Pilih bidang</option>
+                    <option value="Teknologi">Teknologi</option>
+                    <option value="Bisnis">Bisnis</option>
+                    <option value="Ekonomi">Ekonomi</option>
+                    <option value="Sastra">Sastra</option>
+                    <option value="Ilmu Budaya">Ilmu Budaya</option>
+                    <option value="Ilmu Politik">Ilmu Politik</option>
+                </select>
+            </div>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+            <!-- Submit -->
+            <div class="flex items-center justify-between">
+                <a href="{{ route('login') }}" class="text-sm text-gray-600 hover:text-gray-900">
+                    Sudah punya akun?
+                </a>
+                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Daftar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
