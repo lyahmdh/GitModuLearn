@@ -35,13 +35,7 @@
                                     {{ $mod->likes_count }} Likes
                                 </p>
 
-                                <div class="mt-auto">
-                                    <a 
-                                        href="{{ route('modules.show', $mod->id) }}" 
-                                        class="btn btn-primary w-100">
-                                        Lihat Modul
-                                    </a>
-                                </div>
+
 
                             </div>
                         </div>
