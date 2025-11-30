@@ -55,8 +55,8 @@
 
             <!-- Asal Institusi -->
             <div class="mb-4">
-                <label for="institusi" class="block font-medium text-gray-700 mb-1">Asal Institusi</label>
-                <select id="institusi" name="institusi" required
+                <label for="institution" class="block font-medium text-gray-700 mb-1">Asal Institusi</label>
+                <select id="institution" name="institution" required
                     class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     <option value="">Pilih institusi</option>
                     <option value="Universitas Brawijaya">Universitas Brawijaya</option>
@@ -68,8 +68,8 @@
 
             <!-- Bidang yang diminati -->
             <div class="mb-4">
-                <label for="bidang" class="block font-medium text-gray-700 mb-1">Bidang yang diminati</label>
-                <select id="bidang" name="bidang" required
+                <label for="interest_field" class="block font-medium text-gray-700 mb-1">Bidang yang diminati</label>
+                <select id="interest_field" name="interest_field" required
                     class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 px-3 py-2">
                     <option value="">Pilih bidang</option>
                     <option value="Teknologi">Teknologi</option>
