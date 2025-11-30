@@ -1,5 +1,6 @@
 @extends('layouts.dashboard')
 @section('title', 'Liked Modules')
+
 @section('content')
 
 <style>
