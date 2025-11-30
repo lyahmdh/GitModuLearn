@@ -3,28 +3,53 @@
 @section('content')
 <div class="container py-4">
 
-    <h3 class="fw-bold mb-4">Dashboard Admin</h3>
+    {{-- JUDUL --}}
+    <h1 class="mb-4 text-primary" 
+        style="font-size: 2.5rem; font-weight: 800; border-bottom: 4px solid #000000; padding-bottom: 8px;">
+        Dashboard Admin
+    </h1>
 
-    <div class="row">
+    <div class="row g-4">
 
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 mb-3">
-                <h5 class="fw-bold">Total User</h5>
-                <p class="fs-3">{{ $totalUsers }}</p>
+        {{-- TOTAL USER --}}
+        <div class="col-md-4 mb-3">
+            <div class="card border border-2 rounded-4 shadow-sm py-4 px-3" style="background: #FFFFFF;">
+                <div class="ms-1">
+                    <h6 class="fw-bold mb-1 text-primary" style="font-size: 1.1rem; font-weight:700;">
+                        Total User
+                    </h6>
+                    <h3 class="fw-bold mb-0" style="font-size: 2rem; font-weight:300;">
+                        {{ $totalUsers }}
+                    </h3>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 mb-3">
-                <h5 class="fw-bold">Total Modul</h5>
-                <p class="fs-3">{{ $totalModules }}</p>
+        {{-- TOTAL MODUL --}}
+        <div class="col-md-4 mb-3">
+            <div class="card border border-2 rounded-4 shadow-sm py-4 px-3" style="background: #FFFFFF;">
+                <div class="ms-1">
+                    <h6 class="fw-bold mb-1 text-primary" style="font-size: 1.1rem; font-weight:700;">
+                        Total Modul
+                    </h6>
+                    <h3 class="fw-bold mb-0" style="font-size: 2rem; font-weight:300;">
+                        {{ $totalModules }}
+                    </h3>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="card shadow-sm p-3 mb-3">
-                <h5 class="fw-bold">Permintaan Mentor</h5>
-                <p class="fs-3">{{ $pendingMentors }}</p>
+        {{-- PERMINTAAN MENTOR --}}
+        <div class="col-md-4 mb-3">
+            <div class="card border border-2 rounded-4 shadow-sm py-4 px-3" style="background: #FFFFFF;">
+                <div class="ms-1">
+                    <h6 class="fw-bold mb-1 text-primary" style="font-size: 1.1rem; font-weight:700;">
+                        Permintaan Mentor
+                    </h6>
+                    <h3 class="fw-bold mb-0" style="font-size: 2rem; font-weight:300;">
+                        {{ $pendingMentors }}
+                    </h3>
+                </div>
             </div>
         </div>
 
