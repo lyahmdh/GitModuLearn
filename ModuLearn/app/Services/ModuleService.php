@@ -16,6 +16,24 @@ class ModuleService
                      ->withCount('likes')
                      ->get();
     }
+    
+    public function getAllForLessons($request)
+    {
+        $query = Module::with(['mentor', 'category'])
+                       ->withCount('likes');
+    
+        if ($request->search) {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+    
+        if ($request->category) {
+            $query->where('category_id', $request->category);
+        }
+    
+        return $query->latest()->get();
+    }
+        
+    
 
     /**
      * Ambil modul milik mentor tertentu
@@ -70,13 +88,11 @@ class ModuleService
         return $query->get();
     }
 
-    /**
-     * Ambil satu modul beserta detail kategori, mentor, dan likes
-     */
     public function getById(int $id)
     {
-        return Module::with(['mentor', 'category'])
+        return Module::with(['user', 'category']) // ganti mentor → user
                      ->withCount('likes')
                      ->findOrFail($id);
     }
+    
 }

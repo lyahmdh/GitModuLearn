@@ -22,7 +22,7 @@
     {{-- FORM UPDATE --}}
     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
-        @method('PATCH')
+        @method('PUT')
 
         {{-- FOTO PROFIL --}}
         <div class="card border border-2 rounded-4 shadow-sm py-4 px-3" style="background: #FFFFFF; border-radius: 12px">

@@ -22,30 +22,48 @@
     <nav class="bg-white shadow-sm border-b">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
 
+
             {{-- Logo --}}
-            <a href="/landing-login" class="flex items-center font-bold text-lg">
+            <a href="
+                    @if(Auth::check() && Auth::user()->role === 'admin')
+                        {{ route('dashboard.admin') }}
+                    @else
+                        /landing-login
+                    @endif"
+                class="flex items-center font-bold text-lg"            >
                 <img src="{{ asset('assets/logo.png') }}" alt="Modulearn" class="h-8 mr-2">
             </a>
 
+
             {{-- Nav Links --}}
-            <div class="flex gap-6">
-                <a href="/landing-login" class="hover:text-blue-500">Beranda</a>
-                <a href="/pelajaran" class="hover:text-blue-500">Pelajaran</a>
-            </div>
+            @if(auth()->user()->role === 'mentor' || auth()->user()->role === 'mentee')
+                <div class="flex gap-6">
+                    <a href="/landing-login" class="hover:text-blue-500">Beranda</a>
+                    <a href="/pelajaran" class="hover:text-blue-500">Pelajaran</a>
+                </div>
+            @endif
 
             {{-- Profile + Logout --}}
             <div class="flex items-center gap-4">
 
                 {{-- Logout --}}
-                <form method="POST" action="/logout">
+                <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
                         Logout
                     </button>
                 </form>
 
-                {{-- Foto Profil (direct ke halaman edit profile) --}}
-                <a href="/dashboard">
+                {{-- Foto Profil --}}
+                <a href="
+                    @if(auth()->user()->role === 'admin')
+                        {{ route('dashboard.admin') }}
+                    @elseif(auth()->user()->role === 'mentor')
+                        {{ route('dashboard.mentor') }}
+                    @else
+                        {{ route('dashboard.mentee') }}
+                    @endif
+                ">
                     <img src="{{ auth()->user()->profile_photo_path 
                             ? asset(auth()->user()->profile_photo_path) 
                             : asset('assets/default-profile.png') }}"
@@ -55,6 +73,7 @@
 
         </div>
     </nav>
+
 
 
     {{-- =========================================================
@@ -114,6 +133,12 @@
                        <i class="fa fa-thumbs-up text-gray-600"></i>
                         <span>Liked Modules</span>
                     </a>
+
+                    <a href="{{ route('dashboard.mentor.progress') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-chart-line text-gray-600"></i>
+                        <span>Progress</span>
+                    </a>                    
 
                     <a href="{{ route('dashboard.mentor.modules.my-modules') }}"
                        class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
