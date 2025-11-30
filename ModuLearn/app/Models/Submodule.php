@@ -58,4 +58,15 @@ class Submodule extends Model
         $userId = $user instanceof \App\Models\User ? $user->id : $user;
         return $this->progress()->where('user_id', $userId)->exists();
     }
+
+    public function isCompletedBy($user): bool
+    {
+        $userId = $user instanceof \App\Models\User ? $user->id : $user;
+
+        return $this->progress()
+            ->where('user_id', $userId)
+            ->where('status', 'done')
+            ->exists();
+    }
+
 }

@@ -7,7 +7,7 @@
 
     <div class="card shadow-sm p-4">
 
-        <form method="POST" action="{{ route('api.modules.update', $module->id) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('dashboard.mentor.modules.update', $module->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

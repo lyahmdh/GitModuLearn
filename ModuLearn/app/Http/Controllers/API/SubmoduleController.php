@@ -59,29 +59,33 @@ class SubmoduleController extends Controller
     }
     
 
-    public function update(Request $request, Submodule $submodule)
+    public function update(Request $request, Module $module, Submodule $submodule)
     {
         $data = $request->validate([
-            'title' => 'string',
-            'content_type' => 'in:pdf,doc,ppt,video,text',
-            'content_url' => 'string',
-            'order' => 'integer',
+            'title' => 'required|string|max:255',
+            'content_type' => 'required|in:pdf,doc,ppt,video,text',
+            'content_url' => 'required|string',
+            'order' => 'required|integer',
         ]);
-
-        $updated = $this->service->update($submodule, $data);
-
-        return response()->json([
-            'message' => 'Submodule updated',
-            'data' => $updated
-        ]);
+    
+        $this->service->update($submodule, $data);
+    
+        return redirect()->route('dashboard.mentor.submodules.index', $module->id)
+                         ->with('success', 'Submodule berhasil diupdate!');
     }
+    
 
-    public function destroy(Submodule $submodule)
+    public function destroy(Module $module, Submodule $submodule)
     {
         $this->service->delete($submodule);
-
-        return response()->json([
-            'message' => 'Submodule deleted'
-        ]);
+    
+        return redirect()->route('dashboard.mentor.submodules.index', $module->id)
+                         ->with('success', 'Submodule berhasil dihapus!');
     }
+    
+    public function edit(Module $module, Submodule $submodule)
+    {
+        return view('dashboard.mentor.submodules.edit', compact('module', 'submodule'));
+    }
+
 }

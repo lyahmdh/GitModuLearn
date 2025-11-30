@@ -27,4 +27,9 @@ class SubmoduleService
     {
         return $module->submodules()->orderBy('order')->get();
     }
+
+    public function getById($id)
+    {
+        return Submodule::findOrFail($id);
+    }
 }
