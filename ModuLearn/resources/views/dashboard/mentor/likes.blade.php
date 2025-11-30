@@ -35,6 +35,7 @@
         animation: fadeUp .55s ease both;
         position: relative;
         overflow: hidden;
+        margin-bottom: 20px;
     }
     .module-card::before {
         content: "";
