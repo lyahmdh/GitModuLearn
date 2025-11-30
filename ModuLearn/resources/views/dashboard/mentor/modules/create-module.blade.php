@@ -7,7 +7,8 @@
 
     <div class="card shadow-sm p-4">
 
-        <form method="POST" action="{{ route('api.modules.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('dashboard.mentor.modules.store') }}" enctype="multipart/form-data">
+
             @csrf
 
             <div class="mb-3">

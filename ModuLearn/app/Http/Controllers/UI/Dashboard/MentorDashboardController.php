@@ -118,6 +118,32 @@ class MentorDashboardController extends Controller
             ->with('success', 'Modul berhasil diperbarui!');
     }
 
+    public function storeModule(Request $request)
+    {
+        $data = $request->validate([
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'thumbnail' => 'nullable|image|max:2048',
+        ]);
+
+        // Upload thumbnail bila ada
+        if ($request->hasFile('thumbnail')) {
+            $data['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        }
+
+        // Set siapa mentornya
+        $data['mentor_id'] = Auth::id();
+
+        // Simpan modul baru
+        Module::create($data);
+
+        return redirect()
+            ->route('dashboard.mentor.modules.my-modules')
+            ->with('success', 'Modul berhasil dibuat!');
+    }
+
+
 
     /**
      * Lihat semua likes dari modul mentor
