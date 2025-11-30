@@ -3,36 +3,53 @@
 @section('content')
 <div class="container py-4">
 
-    <h3 class="fw-bold mb-4">Dashboard Mentee</h3>
+    <h1 class="mb-4 text-primary" 
+        style="font-size: 2.5rem; font-weight: 800; border-bottom: 4px solid #000000; padding-bottom: 8px;">
+        Dashboard Mentee
+    </h1>
 
-    {{-- RINGKASAN --}}
-    <div class="row">
+    <div class="row g-4">
 
-        {{-- Total Modul Diikuti --}}
+        {{-- MODUL DIIKUTI --}}
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold">Modul Diikuti</h5>
-                <p class="fs-4">{{ $totalModules }}</p>
+            <div class="card border border-2 rounded-4 shadow-sm py-4 px-3" style="background: #FFFFFF;">
+                <div class="d-flex align-items-center">
+                    <div class="ms-3">
+                        <h6 class="fw-bold mb-1 text-primary" style="font-size: 1.1rem; font-weight: 700">Modul Diikuti</h6>
+                        <h3 class="fw-bold mb-0" style="font-size: 2rem; font-weight: 300">{{ $totalModules }}</h3>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- Total Selesai --}}
+        {{-- SUBMODUL SELESAI --}}
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold">Submodul Selesai</h5>
-                <p class="fs-4">{{ $totalCompleted }}</p>
+            <div class="card border border-2 rounded-4 shadow-sm py-4 px-3" style="background: #FFFFFF;">
+                <div class="d-flex align-items-center">
+                    <div class="ms-3">
+                        <h6 class="fw-bold mb-1 text-success" style="font-size: 1.1rem; font-weight: 700">Submodul Selesai</h6>
+                        <h3 class="fw-bold mb-0" style="font-size: 2rem; font-weight: 300">{{ $totalCompleted }}</h3>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- Likes --}}
+        {{-- MODUL DISUKAI --}}
         <div class="col-md-4 mb-3">
-            <div class="card shadow-sm p-3">
-                <h5 class="fw-bold">Modul Disukai</h5>
-                <p class="fs-4">{{ $totalLiked }}</p>
+            <div class="card border border-2 rounded-4 shadow-sm py-4 px-3" style="background: #FFFFFF;">
+                <div class="d-flex align-items-center">
+                    <div class="ms-3">
+                        <h6 class="fw-bold mb-1 text-danger" style="font-size: 1.1rem; font-weight: 700">Modul Disukai</h6>
+                        <h3 class="fw-bold mb-0" style="font-size: 2rem; font-weight: 300">{{ $totalLiked }}</h3>
+                    </div>
+                </div>
             </div>
         </div>
+
+
 
     </div>
+
 
 </div>
 @endsection

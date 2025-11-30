@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\MentorVerification;
-use Illuminate\Http\Request;
-use App\Services\MentorVerificationService;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\MentorVerification;
+use Illuminate\Support\Facades\Auth;
+use App\Services\MentorVerificationService;
 
 class MentorVerificationController extends Controller
 {
@@ -22,18 +23,20 @@ class MentorVerificationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'document_url' => 'required|string|max:255'
+            'document' => 'required|file|max:2048'
         ]);
 
-        $verification = $this->service->submitRequest(
-            $request->user(),
-            $request->only(['document_url'])
-        );
-
-        return response()->json([
-            'message' => 'Request verifikasi mentor berhasil dikirim.',
-            'data' => $verification
+        // Simpan file ke storage/app/public/uploads/docs
+        $path = $request->file('document')->store('uploads/docs', 'public');
+        
+        MentorVerification::create([
+            'user_id' => Auth::id(),
+            'file_path' => $path,
+            'status' => 'pending',
         ]);
+      
+
+        return redirect()->back()->with('success', 'File verifikasi berhasil diupload!');
     }
 
     /**
@@ -45,4 +48,5 @@ class MentorVerificationController extends Controller
 
         return response()->json($verifications);
     }
+    
 }

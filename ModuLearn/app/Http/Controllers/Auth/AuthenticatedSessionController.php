@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
     
-        return redirect('landing.index'); // kembali ke landing page
+        return redirect('/'); // kembali ke landing page
     }
     
 }

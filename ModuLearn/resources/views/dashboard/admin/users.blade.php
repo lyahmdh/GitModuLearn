@@ -1,29 +1,30 @@
 @extends('layouts.dashboard')
-@section('title', 'Dashboard') 
+@section('title', 'Users')
 @section('content')
 <div class="container py-4">
+    <h3 class="fw-bold mb-4">Semua User</h3>
 
-    <h3 class="fw-bold mb-4">Daftar Pengguna</h3>
-
-    <table class="table table-bordered table-striped shadow-sm">
-        <thead class="table-dark">
+    <table class="table table-striped">
+        <thead>
             <tr>
+                <th>ID</th>
                 <th>Nama</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Tanggal Daftar</th>
             </tr>
         </thead>
-
         <tbody>
-            @foreach($users as $u)
+            @foreach($users as $user)
             <tr>
-                <td>{{ $u->name }}</td>
-                <td>{{ $u->email }}</td>
-                <td>{{ ucfirst($u->role) }}</td>
+                <td>{{ $user->id }}</td>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                <td>{{ $user->role }}</td>
+                <td>{{ $user->created_at->format('d M Y') }}</td>
             </tr>
             @endforeach
         </tbody>
     </table>
-
 </div>
 @endsection

@@ -1,164 +1,179 @@
-{{-- resources/views/layouts/dashboard.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title') - Dashboard</title>
+    <title>{{ $title ?? 'Dashboard - Modulearn' }}</title>
 
-    {{-- Bootstrap 5 --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    {{-- Tailwind --}}
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    {{-- AdminLTE 4 (Bootstrap 5 version) --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0/dist/css/adminlte.min.css">
+    {{-- Font Awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     @stack('styles')
 </head>
-<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
 
-<div class="wrapper">
+<body class="bg-gray-100">
 
-    {{-- Navbar --}}
-    <nav class="main-header navbar navbar-expand-lg navbar-light bg-white border-bottom">
-        <div class="container-fluid">
+    {{-- =========================================================
+        NAVBAR (Versi Landing Login)
+    ========================================================== --}}
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
 
-            <button class="btn btn-outline-secondary me-2" data-lte-toggle="sidebar" type="button">
-                <i class="fas fa-bars"></i>
-            </button>
+            {{-- Logo --}}
+            <a href="/landing-login" class="flex items-center font-bold text-lg">
+                <img src="{{ asset('assets/logo.png') }}" alt="Modulearn" class="h-8 mr-2">
+            </a>
 
-            <a class="navbar-brand fw-bold" href="#">Dashboard</a>
+            {{-- Nav Links --}}
+            <div class="flex gap-6">
+                <a href="/landing-login" class="hover:text-blue-500">Beranda</a>
+                <a href="/pelajaran" class="hover:text-blue-500">Pelajaran</a>
+            </div>
 
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
-                        {{ Auth::user()->name }}
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <a href="{{ route('dashboard.mentee.profile') }}" class="dropdown-item">Profile</a>
-                        <hr class="dropdown-divider">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button class="dropdown-item text-danger">Logout</button>
-                        </form>
-                    </div>
-                </li>
-            </ul>
+            {{-- Profile + Logout --}}
+            <div class="flex items-center gap-4">
+
+                {{-- Logout --}}
+                <form method="POST" action="/logout">
+                    @csrf
+                    <button class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                        Logout
+                    </button>
+                </form>
+
+                {{-- Foto Profil (direct ke halaman edit profile) --}}
+                <a href="/dashboard">
+                    <img src="{{ auth()->user()->profile_photo_path 
+                            ? asset(auth()->user()->profile_photo_path) 
+                            : asset('assets/default-profile.png') }}"
+                        class="h-10 w-10 rounded-full object-cover">
+                </a>
+            </div>
 
         </div>
     </nav>
 
-    {{-- Sidebar --}}
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">   
 
-        <div class="sidebar">
+    {{-- =========================================================
+        MAIN STRUCTURE (Sidebar + Content)
+    ========================================================== --}}
+    <div class="flex">
 
-            <nav class="mt-3">
-                <ul class="nav nav-pills nav-sidebar flex-column">
+        {{-- ====================================================
+            SIDEBAR MODERN TAILWIND (Dynamic Role)
+        ===================================================== --}}
+        <aside class="w-64 bg-white h-screen p-5 shadow sticky top-0">
 
-                    {{-- DASHBOARD MENU DYNAMIC BY ROLE --}}
-                    @if(Auth::user()->role == 'mentee')
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.mentee') }}" class="nav-link">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>Profile</p>
-                            </a>
-                        </li>
+            <nav class="space-y-2">
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.mentee.likes') }}" class="nav-link">
-                                <i class="nav-icon fas fa-heart"></i>
-                                <p>Liked Modules</p>
-                            </a>
-                        </li>
+                {{-- ================= MENTEE ================= --}}
+                @if(auth()->user()->role === 'mentee')
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.mentee.progress') }}" class="nav-link">
-                                <i class="nav-icon fas fa-chart-line"></i>
-                                <p>Progress</p>
-                            </a>
-                        </li>
-                    @endif
+                    <a href="{{ route('dashboard.mentee.profile') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-user text-gray-600"></i>
+                        <span>Edit Profile</span>
+                    </a>
 
+                    <a href="{{ route('dashboard.mentee.likes') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-heart text-gray-600"></i>
+                        <span>Liked Modules</span>
+                    </a>
 
-                    @if(Auth::user()->role == 'mentor')
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.mentor') }}" class="nav-link">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>Dashboard Mentor</p>
-                            </a>
-                        </li>
+                    <a href="{{ route('dashboard.mentee.progress') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-chart-line text-gray-600"></i>
+                        <span>Progress</span>
+                    </a>
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.mentor.modules') }}" class="nav-link">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>My Modules</p>
-                            </a>
-                        </li>
+                    {{-- Ajukan Verifikasi Mentor --}}
+                    <a href="{{ route('mentor.verification.form') }}"
+                    class="flex items-center gap-3 p-3 rounded-lg bg-yellow-100 hover:bg-yellow-200 border border-yellow-300 rounded-lg font-medium">
+                        <i class="fa fa-id-card text-yellow-700"></i>
+                        <span>Ajukan Verifikasi Mentor</span>
+                    </a>
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.mentor.likes') }}" class="nav-link">
-                                <i class="nav-icon fas fa-thumbs-up"></i>
-                                <p>Module Likes</p>
-                            </a>
-                        </li>
-                    @endif
+                @endif
 
 
-                    @if(Auth::user()->role == 'admin')
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.admin') }}" class="nav-link">
-                                <i class="nav-icon fas fa-home"></i>
-                                <p>Admin Dashboard</p>
-                            </a>
-                        </li>
+                {{-- ================= MENTOR ================= --}}
+                @if(auth()->user()->role === 'mentor')
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.admin.users') }}" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>Users</p>
-                            </a>
-                        </li>
+                    <a href="{{ route('dashboard.mentor.profile') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-user text-gray-600"></i>
+                        <span>Edit Profile</span>
+                    </a>
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.admin.modules') }}" class="nav-link">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>Modules</p>
-                            </a>
-                        </li>
+                    <a href="{{ route('dashboard.mentor.likes') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                       <i class="fa fa-thumbs-up text-gray-600"></i>
+                        <span>Liked Modules</span>
+                    </a>
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.admin.categories') }}" class="nav-link">
-                                <i class="nav-icon fas fa-tags"></i>
-                                <p>Categories</p>
-                            </a>
-                        </li>
+                    <a href="{{ route('dashboard.mentor.modules.my-modules') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-book text-gray-600"></i>
+                        <span>My Modules</span>
+                    </a>
 
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard.admin.mentorApproval') }}" class="nav-link">
-                                <i class="nav-icon fas fa-check-circle"></i>
-                                <p>Mentor Approval</p>
-                            </a>
-                        </li>
-                    @endif
+                @endif
 
-                </ul>
+
+                {{-- ================= ADMIN ================= --}}
+                @if(auth()->user()->role === 'admin')
+
+                    <a href="{{ route('dashboard.admin') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-home text-gray-600"></i>
+                        <span>Admin Dashboard</span>
+                    </a>
+
+                    <a href="{{ route('dashboard.admin.users') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-users text-gray-600"></i>
+                        <span>Users</span>
+                    </a>
+
+                    <a href="{{ route('dashboard.admin.modules') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-book text-gray-600"></i>
+                        <span>Modules</span>
+                    </a>
+
+                    <a href="{{ route('dashboard.admin.categories') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-tags text-gray-600"></i>
+                        <span>Categories</span>
+                    </a>
+
+                    <a href="{{ route('dashboard.admin.mentorApproval') }}"
+                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-blue-100">
+                        <i class="fa fa-check-circle text-gray-600"></i>
+                        <span>Mentor Approval</span>
+                    </a>
+
+                @endif
+
             </nav>
 
-        </div>
-    </aside>
+        </aside>
 
-    {{-- Content --}}
-    <div class="content-wrapper p-4">
-        @yield('content')
+
+        {{-- ====================================================
+            CONTENT AREA
+        ===================================================== --}}
+        <main class="flex-1 p-8">
+            @yield('content')
+        </main>
+
     </div>
 
-</div>
-
-{{-- JS --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/admin-lte@4.0.0/dist/js/adminlte.min.js"></script>
-
-@stack('scripts')
+    @stack('scripts')
 
 </body>
 </html>

@@ -15,7 +15,7 @@ class HasVerifiedMentor
         
         $verification = $request->user()->mentorVerifications()->latest()->first();
         
-        if (!$verification || $verification->verification_status !== 'approved') {
+        if (!$verification || $verification->status !== 'approved') {
             abort(403, 'Akun Anda belum diverifikasi sebagai mentor.');
         }
         
