@@ -82,15 +82,20 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard/mentor/my-modules', [MentorDashboardController::class, 'myModules'])->name('dashboard.mentor.modules.my-modules');
         Route::get('/dashboard/mentor/my-modules/create', [MentorDashboardController::class, 'createModule'])->name('dashboard.mentor.modules.create');
         Route::get('/dashboard/mentor/my-modules/{id}/edit', [MentorDashboardController::class, 'editModule'])->name('dashboard.mentor.modules.edit');
+        Route::put('/dashboard/mentor/my-modules/{id}', [MentorDashboardController::class, 'updateModule'])->name('dashboard.mentor.modules.update');
 
         // Likes & Profile
         Route::get('/dashboard/mentor/likes', [MentorDashboardController::class, 'likedModules'])->name('dashboard.mentor.likes');
+        Route::get('/dashboard/mentor/progress', [MentorDashboardController::class, 'progress'])->name('dashboard.mentor.progress');
         Route::get('/dashboard/mentor/profile', [MentorDashboardController::class, 'editProfile'])->name('dashboard.mentor.profile');
 
         // Submodules untuk mentor
         Route::get('/dashboard/mentor/my-modules/{module}/submodules', [SubmoduleController::class, 'index'])->name('dashboard.mentor.submodules.index');
         Route::get('/dashboard/mentor/my-modules/{module}/submodules/create', [SubmoduleController::class, 'create'])->name('dashboard.mentor.submodules.create');
         Route::post('/dashboard/mentor/my-modules/{module}/submodules', [SubmoduleController::class, 'store'])->name('dashboard.mentor.submodules.store');
+        Route::get('/dashboard/mentor/my-modules/{module}/submodules/{submodule}/edit', [SubmoduleController::class, 'edit'])->name('dashboard.mentor.submodules.edit');
+        Route::put('/dashboard/mentor/my-modules/{module}/submodules/{submodule}', [SubmoduleController::class, 'update'])->name('dashboard.mentor.submodules.update');
+        Route::delete('/dashboard/mentor/my-modules/{module}/submodules/{submodule}', [SubmoduleController::class, 'destroy'])->name('dashboard.mentor.submodules.destroy');
     });
 
     // admin dashboard
@@ -109,9 +114,9 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('/modules', [ModuleController::class, 'store'])->name('api.modules.store');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::post('/modules', [ModuleController::class, 'store'])->name('api.modules.store');
+// });
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -163,39 +168,51 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
          ->name('admin.mentorVerification.reject');
 });
 
-
-/* ======================================================
-| Developer 2 - Module & Category (WEB)
-| - List pages (public/guest)
-| - Detail page for module: require auth to open (clicking a module redirects to login if guest)
-======================================================*/
-Route::post('/modules', [ModuleController::class, 'store'])->name('api.modules.store');
-
-// Modules listing page (public: guest can search/filter but not open module)
-Route::get('/modules', function () {
-    return view('modules.index'); // frontend will consume API for data & interactions
-})->name('modules.index')->middleware('guest_access');
-
-// Module detail page: require login (clicking a module should redirect to login for guests)
-Route::get('/modules/{id}', function ($id) {
-    return view('modules.show', ['moduleId' => $id]); // frontend loads data via API
-})->middleware('auth')->name('modules.show');
-
-// Categories listing page (public)
-Route::get('/categories', function () {
-    return view('categories.index');
-})->name('categories.index')->middleware('guest_access');
+/*
+|--------------------------------------------------------------------------
+| Pelajaran (PUBLIC: Guest boleh akses)
+|--------------------------------------------------------------------------
+| - Halaman list modul (search & filter)
+| - Blade: modules/index.blade.php
+*/
+Route::get('/pelajaran', [LessonController::class, 'index'])
+    ->name('pelajaran.index'); // guest allowed
 
 
-/* ======================================================
-| Developer 3 - Submodule & Progress (WEB)
-| - Submodule page can be same as module detail; detail content fetched by JS/API
-======================================================*/
+/*
+|--------------------------------------------------------------------------
+| Modul (AUTH ONLY)
+|--------------------------------------------------------------------------
+| - Guest TIDAK boleh akses modul detail
+| - Jika guest buka /pelajaran/modul/{id} → redirect otomatis ke login
+| - Blade: modules/show.blade.php
+*/
+Route::get('/pelajaran/modul/{id}', [LessonController::class, 'showModule'])
+    ->middleware('auth')
+    ->name('pelajaran.module.show');
 
-// If you want a dedicated submodule view:
-Route::get('/modules/{moduleId}/submodules/{submoduleId}', function ($moduleId, $submoduleId) {
-    return view('submodules.show', ['moduleId' => $moduleId, 'submoduleId' => $submoduleId]);
-})->middleware('auth')->name('submodules.show');
+
+/*
+|--------------------------------------------------------------------------
+| Submodule (AUTH ONLY)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+
+    // Show submodule
+    Route::get(
+        '/pelajaran/modul/{moduleId}/submodul/{submoduleId}',
+        [LessonController::class, 'showSubmodule']
+    )->name('pelajaran.submodule.show');
+
+    // Toggle complete / undo
+    Route::post(
+        '/pelajaran/modul/{moduleId}/submodul/{submoduleId}/toggle',
+        [LessonController::class, 'toggleSubmodule']
+    )->name('pelajaran.submodule.toggle');
+
+});
+
 
 
 /* ======================================================
@@ -203,30 +220,10 @@ Route::get('/modules/{moduleId}/submodules/{submoduleId}', function ($moduleId, 
 | - Like button in UI will call API; provide optional fallback web post (redirect)
 ======================================================*/
 
-// Optional fallback route (POST) — but frontend should use API for likes
-Route::post('/like', function (\Illuminate\Http\Request $request) {
-    // For fallback only: you can redirect or handle via controller
-    return redirect()->back();
-})->middleware('auth')->name('like.fallback');
-
-
-/*
-|--------------------------------------------------------------------------
-| Pelajaran / Modul / Submodul (UI)
-|--------------------------------------------------------------------------
-*/
-// list modul (public)
-Route::get('/pelajaran', [LessonController::class, 'index'])->name('pelajaran.index');
-
-// modul detail (login required)
-Route::get('/pelajaran/modul/{id}', [LessonController::class, 'showModule'])
-    ->middleware('auth')
-    ->name('pelajaran.module.show');
-
-// submodul detail (login required)
-Route::get('/pelajaran/submodul/{id}', [LessonController::class, 'showSubmodule'])
-    ->middleware('auth')
-    ->name('pelajaran.submodule.show');
+Route::middleware('auth')->group(function () {
+    Route::post('/modules/{id}/like', [LikeController::class, 'toggle'])
+        ->name('modules.like');
+});
 
 
 /*

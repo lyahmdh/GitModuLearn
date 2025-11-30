@@ -4,10 +4,14 @@ namespace App\Http\Controllers\UI\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request; 
 use App\Services\ModuleService;
 use App\Services\SubmoduleService;
+use App\Services\SubmoduleProgressService;
 use App\Services\LikeService;
 use App\Services\CategoryService;
+use App\Models\Module;
+use App\Models\Category;
 
 class MentorDashboardController extends Controller
 {
@@ -15,17 +19,20 @@ class MentorDashboardController extends Controller
     protected $submoduleService;
     protected $likeService;
     protected $categoryService;
+    protected $submoduleProgressService;
 
     public function __construct(
         ModuleService $moduleService,
         SubmoduleService $submoduleService,
         LikeService $likeService,
-        CategoryService $categoryService
+        CategoryService $categoryService,
+        SubmoduleProgressService $SubmoduleProgressService
     ) {
         $this->moduleService = $moduleService;
         $this->submoduleService = $submoduleService;
         $this->likeService = $likeService;
         $this->categoryService = $categoryService;
+        $this->SubmoduleProgressService = $SubmoduleProgressService;
     }
 
     /**
@@ -84,10 +91,33 @@ class MentorDashboardController extends Controller
      */
     public function editModule($id)
     {
-        $module = $this->moduleService->getById($id);
-
-        return view('dashboard.mentor.modules.edit-module', compact('module'));
+        $module = Module::findOrFail($id);
+        $categories = Category::all(); // <— WAJIB
+    
+        return view('dashboard.mentor.modules.edit-module', compact('module', 'categories'));
     }
+
+    public function updateModule(Request $request, $id)
+    {
+        $module = Module::findOrFail($id);
+
+        $data = $request->validate([
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'thumbnail' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            $data['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        }
+
+        $module->update($data);
+
+        return redirect()
+            ->route('dashboard.mentor.modules.my-modules')
+            ->with('success', 'Modul berhasil diperbarui!');
+    }
+
 
     /**
      * Lihat semua likes dari modul mentor
@@ -105,11 +135,17 @@ class MentorDashboardController extends Controller
         $likedModules = $this->likeService->getModuleLikesByMentor(Auth::id());
         return view('dashboard.mentor.likes', compact('likedModules'));
     }
-    
-    
 
     public function editProfile()
     {
         return view('dashboard.mentor.profile', ['user' => Auth::user()]);
     }
+
+    public function progress()
+    {
+        $progressList = $this->SubmoduleProgressService->getUserProgressList(Auth::id());
+    
+        return view('dashboard.mentor.progress', compact('progressList'));
+    }    
+
 }
