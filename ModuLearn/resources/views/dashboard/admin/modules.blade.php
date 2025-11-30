@@ -2,32 +2,61 @@
 @section('title', 'Modules Admin')
 @section('content')
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Judul</th>
-            <th>Kategori</th>
-            <th>Likes</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($modules as $mod)
-        <tr id="module-{{ $mod->id }}">
-            <td>{{ $mod->title }}</td>
-            <td>{{ $mod->category->name }}</td>
-            <td>{{ $mod->likes_count }}</td>
-            <td>
-                <form method="POST" action="{{ route('admin.modules.destroy', $mod->id) }}" class="delete-form">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                </form>
-            </td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+<div class="container py-4">
+
+    {{-- JUDUL --}}
+    <h1 class="mb-4 text-primary" 
+        style="font-size: 2.5rem; font-weight: 800; border-bottom: 4px solid #000000; padding-bottom: 8px;">
+        Modules
+    </h1>
+
+    {{-- WRAPPER TABEL --}}
+    <div class="p-4 shadow-sm" 
+         style="background: #FFFFFF; border-radius: 18px;">
+
+        <table class="table table-bordered align-middle" style="width: 100%; border-radius: 18px; overflow:hidden;">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-center">Judul</th>
+                    <th class="text-center">Kategori</th>
+                    <th class="text-center">Likes</th>
+                    <th class="text-center">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach($modules as $mod)
+                <tr id="module-{{ $mod->id }}">
+                    <td>{{ $mod->title }}</td>
+                    <td>{{ $mod->category->name }}</td>
+                    <td class="text-center">{{ $mod->likes_count }}</td>
+                    <td class="text-center">
+                        <form method="POST" action="{{ route('admin.modules.destroy', $mod->id) }}" class="delete-form d-inline">
+                            @csrf
+                            @method('DELETE')
+                            
+                            {{-- TOMBOL HAPUS CUSTOM --}}
+                            <button type="submit"
+                                style="
+                                    background:#dc3545;
+                                    color:white;
+                                    border:none;
+                                    padding:6px 14px;
+                                    border-radius:18px;
+                                ">
+                                Hapus
+                            </button>
+
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+
+        </table>
+
+    </div>
+</div>
 
 <script>
 document.querySelectorAll('.delete-form').forEach(form => {
