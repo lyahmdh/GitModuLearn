@@ -52,6 +52,7 @@ class Module extends Model
     // Relasi ke User (pemilik/creator modul)
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'mentor_id'); // sesuaikan foreign key
     }
+
 }
