@@ -27,10 +27,15 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate(); 
         $request->session()->regenerate();
     
-        return redirect()->intended('/'); // landing page
-    }
-    
+        // Login
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect()->route('dashboard.admin');
+        }
+        return redirect()->route('landing-login');
 
+    }   
+ 
     /**
      * Destroy an authenticated session.
      */

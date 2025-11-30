@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Models\Like;
+use App\Models\Module;
+use Illuminate\Support\Facades\Auth;
 
 class LikeService
 {
-    public function toggleLike($userId, $moduleId)
+    public function toggleLike(int $userId, int $moduleId): array
     {
         $existing = Like::where('user_id', $userId)
                         ->where('module_id', $moduleId)
@@ -34,7 +36,21 @@ class LikeService
 
     public function getUserLikes(int $userId)
     {
-        // Mengambil semua like user
-        return Like::where('user_id', $userId)->get();
+        return Module::with('category')       // ambil kategori
+                     ->withCount('likes')     // tambahkan likes_count
+                     ->whereHas('likes', function($q) use ($userId) {
+                         $q->where('user_id', $userId); // hanya yang di-like user ini
+                     })
+                     ->get();
+    }
+
+    public function getModuleLikesByMentor(int $userId)
+    {
+        return Module::whereHas('likes', function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->with('category')
+            ->withCount('likes')
+            ->get();
     }
 }

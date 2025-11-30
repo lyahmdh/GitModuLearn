@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
 use App\Models\Submodule;
 use App\Models\Module;
 use Illuminate\Http\Request;
 use App\Services\SubmoduleService;
+use App\Http\Controllers\Controller;
 
 class SubmoduleController extends Controller
 {
@@ -15,55 +17,75 @@ class SubmoduleController extends Controller
         $this->service = $service;
     }
 
-    public function index(Module $module)
+    /**
+     * Tampilkan form buat submodule baru
+     */
+    public function create(Module $module)
     {
-        return response()->json([
-            'data' => $this->service->getByModule($module)
-        ]);
+        return view('dashboard.mentor.submodules.create', compact('module'));
     }
 
+    /**
+     * Simpan submodule baru
+     */
     public function store(Request $request, Module $module)
     {
-        $data = $request->validate([
-            'title' => 'required|string',
+        $request->validate([
+            'title' => 'required|string|max:255',
             'content_type' => 'required|in:pdf,doc,ppt,video,text',
             'content_url' => 'required|string',
             'order' => 'required|integer',
         ]);
 
-        $data['module_id'] = $module->id;
+        $submodule = Submodule::create([
+            'module_id' => $module->id,
+            'title' => $request->title,
+            'content_type' => $request->content_type,
+            'content_url' => $request->content_url,
+            'order' => $request->order,
+        ]);
 
-        $submodule = $this->service->create($data);
-
-        return response()->json([
-            'message' => 'Submodule created',
-            'data' => $submodule
-        ], 201);
+        return redirect()->route('dashboard.mentor.submodules.index', $module->id)
+                         ->with('success', 'Submodule berhasil dibuat!');
     }
 
-    public function update(Request $request, Submodule $submodule)
+    /**
+     * Daftar semua submodules dari modul tertentu
+     */
+    public function index(Module $module)
+    {
+        $submodules = $module->submodules()->orderBy('order')->get();
+        return view('dashboard.mentor.submodules.index', compact('module', 'submodules'));
+    }
+    
+
+    public function update(Request $request, Module $module, Submodule $submodule)
     {
         $data = $request->validate([
-            'title' => 'string',
-            'content_type' => 'in:pdf,doc,ppt,video,text',
-            'content_url' => 'string',
-            'order' => 'integer',
+            'title' => 'required|string|max:255',
+            'content_type' => 'required|in:pdf,doc,ppt,video,text',
+            'content_url' => 'required|string',
+            'order' => 'required|integer',
         ]);
-
-        $updated = $this->service->update($submodule, $data);
-
-        return response()->json([
-            'message' => 'Submodule updated',
-            'data' => $updated
-        ]);
+    
+        $this->service->update($submodule, $data);
+    
+        return redirect()->route('dashboard.mentor.submodules.index', $module->id)
+                         ->with('success', 'Submodule berhasil diupdate!');
     }
+    
 
-    public function destroy(Submodule $submodule)
+    public function destroy(Module $module, Submodule $submodule)
     {
         $this->service->delete($submodule);
-
-        return response()->json([
-            'message' => 'Submodule deleted'
-        ]);
+    
+        return redirect()->route('dashboard.mentor.submodules.index', $module->id)
+                         ->with('success', 'Submodule berhasil dihapus!');
     }
+    
+    public function edit(Module $module, Submodule $submodule)
+    {
+        return view('dashboard.mentor.submodules.edit', compact('module', 'submodule'));
+    }
+
 }

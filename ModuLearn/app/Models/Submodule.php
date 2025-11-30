@@ -50,7 +50,7 @@ class Submodule extends Model
     /**
      * Check if a given user has marked this submodule as done.
      *
-     * @param \App\Models\User|int $user
+     * @param \app\Models\User|int $user
      * @return bool
      */
     public function isDoneBy($user): bool
@@ -58,4 +58,15 @@ class Submodule extends Model
         $userId = $user instanceof \App\Models\User ? $user->id : $user;
         return $this->progress()->where('user_id', $userId)->exists();
     }
+
+    public function isCompletedBy($user): bool
+    {
+        $userId = $user instanceof \App\Models\User ? $user->id : $user;
+
+        return $this->progress()
+            ->where('user_id', $userId)
+            ->where('status', 'done')
+            ->exists();
+    }
+
 }

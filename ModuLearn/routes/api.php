@@ -3,12 +3,12 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ModuleController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SubmoduleController;
-use App\Http\Controllers\SubmoduleProgressController;
-use App\Http\Controllers\LikeController;
-use App\Http\Controllers\MentorVerificationController;
+use App\Http\Controllers\API\ModuleController;
+use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\SubmoduleController;
+use App\Http\Controllers\API\SubmoduleProgressController;
+use App\Http\Controllers\API\LikeController;
+use App\Http\Controllers\API\MentorVerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,30 +33,30 @@ use App\Http\Controllers\MentorVerificationController;
 | - GET /api/categories => list categories (public)
 | - POST/PUT/DELETE /api/categories => admin only
 ======================================================*/
+// Route::middleware('auth')->post('/modules/{id}/like', [LikeController::class, 'toggle']);
+// // Modules — listing & search (public)
+// Route::get('/modules', [ModuleController::class, 'index']);           // supports ?category=&keyword=&sort=
+// Route::get('/modules/search', [ModuleController::class, 'index']);    // alias for search
+// Route::get('/modules/filter', [ModuleController::class, 'index']);    // alias for filter
 
-// Modules — listing & search (public)
-Route::get('/modules', [ModuleController::class, 'index']);           // supports ?category=&keyword=&sort=
-Route::get('/modules/search', [ModuleController::class, 'index']);    // alias for search
-Route::get('/modules/filter', [ModuleController::class, 'index']);    // alias for filter
+// // Module CRUD (authenticated)
+// Route::middleware(['auth:sanctum', 'verified_mentor'])->group(function () {
+//     Route::post('/modules', [ModuleController::class, 'store']);      
+//     Route::put('/modules/{module}', [ModuleController::class, 'update']);
+// });
 
-// Module CRUD (authenticated)
-Route::middleware(['auth:sanctum', 'verified_mentor'])->group(function () {
-    Route::post('/modules', [ModuleController::class, 'store']);      // create by verified mentor
-    Route::put('/modules/{module}', [ModuleController::class, 'update']);
-});
+// // Module delete: admin only
+// Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+//     Route::delete('/modules/{module}', [ModuleController::class, 'destroy']);
+// });
 
-// Module delete: admin only
-Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
-    Route::delete('/modules/{module}', [ModuleController::class, 'destroy']);
-});
-
-// Categories
-Route::get('/categories', [CategoryController::class, 'index']);     // public list
-Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::put('/categories/{category}', [CategoryController::class, 'update']);
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
-});
+// // Categories
+// Route::get('/categories', [CategoryController::class, 'index']);     // public list
+// Route::middleware(['auth:sanctum', 'is_admin'])->group(function () {
+//     Route::post('/categories', [CategoryController::class, 'store']);
+//     Route::put('/categories/{category}', [CategoryController::class, 'update']);
+//     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+// });
 
 
 /* ======================================================
@@ -85,7 +85,17 @@ Route::middleware('auth:sanctum')->post('/progress/mark', [SubmoduleProgressCont
 | - Toggle like on module
 | - Authenticated users only (mentee or mentor)
 ======================================================*/
-Route::middleware('auth:sanctum')->post('/modules/{module}/like', [LikeController::class, 'toggle']);
+
+
+
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::post('/modules/{id}/like', [LikeController::class, 'toggle']);
+// });
+
+// Route::post('/modules/{id}/like', [LikeController::class, 'toggle'])
+//     ->middleware('auth');
+
+
 
 
 /* ======================================================
