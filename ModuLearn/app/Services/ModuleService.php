@@ -17,21 +17,23 @@ class ModuleService
                      ->get();
     }
     
-    public function getAllForLessons($request)
-    {
-        $query = Module::with(['mentor', 'category'])
-                       ->withCount('likes');
-    
-        if ($request->search) {
-            $query->where('title', 'LIKE', '%' . $request->search . '%');
-        }
-    
-        if ($request->category) {
-            $query->where('category_id', $request->category);
-        }
-    
-        return $query->latest()->get();
+public function getAllForLessons($request)
+{
+    $query = Module::with(['mentor', 'category'])
+                   ->withCount('likes');
+
+    if ($request->search) {
+        $query->where('title', 'LIKE', '%' . $request->search . '%');
     }
+
+    if ($request->category) {
+        $query->where('category_id', $request->category);
+    }
+
+    // Urutkan berdasarkan likes terbanyak
+    return $query->orderBy('likes_count', 'desc')->get();
+}
+
         
     
 
