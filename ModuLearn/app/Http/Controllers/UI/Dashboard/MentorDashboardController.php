@@ -59,15 +59,7 @@ class MentorDashboardController extends Controller
         ));
     }
 
-    /**
-     * Menampilkan semua modul mentor
-     */
-    // public function modules()
-    // {
-    //     $modules = $this->moduleService->getAll(); // semua modul atau sesuai logikamu
-    //     return view('dashboard.mentor.modules.index', compact('modules'));
-    // }
-    
+   
     public function myModules()
     {
         $modules = $this->moduleService->getModulesByMentor(Auth::id());
@@ -141,20 +133,6 @@ class MentorDashboardController extends Controller
             ->route('dashboard.mentor.modules.my-modules')
             ->with('success', 'Modul berhasil dibuat!');
     }
-    
-
-
-
-    /**
-     * Lihat semua likes dari modul mentor
-     */
-    // public function likes()
-    // {
-    //     $modules = $this->moduleService->getModulesByMentor(Auth::id());
-    //     $totalLikes = $modules->sum('likes_count');
-
-    //     return view('dashboard.mentor.likes', compact('modules', 'totalLikes'));
-    // }
 
     public function likedModules()
     {

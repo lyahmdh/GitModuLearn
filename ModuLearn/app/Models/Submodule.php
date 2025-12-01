@@ -36,23 +36,13 @@ class Submodule extends Model
     }
 
     /**
-     * A submodule has many progress records (one per user who marks it).
+     * A submodule has many progress records (one per user who marks it)
      */
     public function progress()
     {
         return $this->hasMany(SubmoduleProgress::class);
     }
 
-    /* -------------------------
-     | Helper methods (optional)
-     |------------------------- */
-
-    /**
-     * Check if a given user has marked this submodule as done.
-     *
-     * @param \app\Models\User|int $user
-     * @return bool
-     */
     public function isDoneBy($user): bool
     {
         $userId = $user instanceof \App\Models\User ? $user->id : $user;

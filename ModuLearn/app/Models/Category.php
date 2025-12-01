@@ -14,7 +14,7 @@ class Category extends Model
     ];
 
     /**
-     * Relasi: 1 Category memiliki banyak Modules
+     * 1 Category memiliki banyak Modules
      */
     public function modules()
     {

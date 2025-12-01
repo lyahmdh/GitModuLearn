@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class LikeService
 {
+    // menambah menghapus
     public function toggleLike(int $userId, int $moduleId): array
     {
         $existing = Like::where('user_id', $userId)
@@ -23,7 +24,7 @@ class LikeService
             ];
         }
 
-        Like::create([
+        Like::create([  
             'user_id' => $userId,
             'module_id' => $moduleId
         ]);
@@ -34,6 +35,7 @@ class LikeService
         ];
     }
 
+    // mengambil data module yang sudah dilike
     public function getUserLikes(int $userId)
     {
         return Module::with('category')       // ambil kategori

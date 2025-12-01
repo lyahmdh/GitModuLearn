@@ -22,7 +22,7 @@
             {{-- Navlinks --}}
             <div class="flex gap-6">
                 <a href="/" class="hover:text-blue-500">Beranda</a>
-                <a href="/pelajaran" class="hover:text-blue-500">Pelajaran</a>
+                <a href="/login" class="hover:text-blue-500">Pelajaran</a>
             </div>
 
             {{-- Auth Buttons --}}

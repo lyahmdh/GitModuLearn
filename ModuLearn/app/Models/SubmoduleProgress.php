@@ -14,11 +14,7 @@ class SubmoduleProgress extends Model
     protected $fillable = [
         'user_id',
         'submodule_id',
-        'status', // 'done' per ERD; you can change to boolean if preferred
-    ];
-
-    protected $casts = [
-        // if you use boolean instead of enum, adjust accordingly
+        'status',
     ];
 
     /* -------------------------
@@ -41,18 +37,6 @@ class SubmoduleProgress extends Model
         return $this->belongsTo(User::class);
     }
 
-    /* -------------------------
-     | Helper methods (optional)
-     |------------------------- */
-
-    /**
-     * Mark (or toggle) submodule as done for a user.
-     * Use updateOrCreate so repeated marks won't duplicate rows.
-     *
-     * @param int $userId
-     * @param int $submoduleId
-     * @return \App\Models\SubmoduleProgress
-     */
     public static function markDone(int $userId, int $submoduleId): self
     {
         return self::updateOrCreate(
