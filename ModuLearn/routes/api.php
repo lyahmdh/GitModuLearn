@@ -66,18 +66,18 @@ use App\Http\Controllers\API\MentorVerificationController;
 | - Progress mark => authenticated users (mentee/mentor) via POST
 ======================================================*/
 
-// Submodules listing per module (public data, but content viewing may require auth depending frontend)
-Route::get('/modules/{module}/submodules', [SubmoduleController::class, 'index']);
+// // Submodules listing per module (public data, but content viewing may require auth depending frontend)
+// Route::get('/modules/{module}/submodules', [SubmoduleController::class, 'index']);
 
-// Submodule CRUD (mentor only, verified)
-Route::middleware(['auth:sanctum', 'verified_mentor'])->group(function () {
-    Route::post('/modules/{module}/submodules', [SubmoduleController::class, 'store']);
-    Route::put('/submodules/{submodule}', [SubmoduleController::class, 'update']);
-    Route::delete('/submodules/{submodule}', [SubmoduleController::class, 'destroy']);
-});
+// // Submodule CRUD (mentor only, verified)
+// Route::middleware(['auth:sanctum', 'verified_mentor'])->group(function () {
+//     Route::post('/modules/{module}/submodules', [SubmoduleController::class, 'store']);
+//     Route::put('/submodules/{submodule}', [SubmoduleController::class, 'update']);
+//     Route::delete('/submodules/{submodule}', [SubmoduleController::class, 'destroy']);
+// });
 
-// Progress (mark as done) — authenticated users
-Route::middleware('auth:sanctum')->post('/progress/mark', [SubmoduleProgressController::class, 'markAsDone']);
+// // Progress (mark as done) — authenticated users
+// Route::middleware('auth:sanctum')->post('/progress/mark', [SubmoduleProgressController::class, 'markAsDone']);
 
 
 /* ======================================================
@@ -104,20 +104,20 @@ Route::middleware('auth:sanctum')->post('/progress/mark', [SubmoduleProgressCont
 | - User can view their verification history (authenticated)
 | - Admin approval/reject is done via WEB admin panel (AdminMentorVerificationController)
 ======================================================*/
-Route::middleware('auth:sanctum')->group(function () {
-    // submit verification (user)
-    Route::post('/mentor/verification', [MentorVerificationController::class, 'store']);
+// Route::middleware('auth:sanctum')->group(function () {
+//     // submit verification (user)
+//     Route::post('/mentor/verification', [MentorVerificationController::class, 'store']);
 
-    // user checks their verifications
-    Route::get('/mentor/verification/me', [MentorVerificationController::class, 'index']);
-});
+//     // user checks their verifications
+//     Route::get('/mentor/verification/me', [MentorVerificationController::class, 'index']);
+// });
 
 
-/* ======================================================
-| Extra: utility endpoints (optional)
-| - profile info (for SPA)
-======================================================*/
-Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
-    return response()->json($request->user());
-});
+// /* ======================================================
+// | Extra: utility endpoints (optional)
+// | - profile info (for SPA)
+// ======================================================*/
+// Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+//     return response()->json($request->user());
+// });
 

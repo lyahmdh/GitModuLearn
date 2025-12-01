@@ -35,11 +35,11 @@
                     </td>
 
                     <td>
-                        <a href="{{ asset('storage/' . $req->document) }}" 
-                           target="_blank" 
-                           class="btn text-white btn-sm"
-                           style="background:#0d6efd; border-radius:12px; padding:6px 16px;">
-                            Lihat
+                        <a href="{{ asset('storage/' . $req->file_path) }}" 
+                            target="_blank" 
+                            class="btn btn-sm text-white"
+                            style="background: #0d6efd; border-radius: 12px; padding: 6px 16px;">
+                                Lihat Dokumen
                         </a>
                     </td>
 
@@ -71,15 +71,20 @@
 
 {{-- APPROVAL --}}
 <script>
-document.querySelectorAll('.approve-btn').forEach(button => {
+document.querySelectorAll('.approve-btn, .reject-btn').forEach(button => {
     button.addEventListener('click', async () => {
+        const isApprove = button.classList.contains('approve-btn');
+        const action = isApprove ? 'approve' : 'reject';
+        const confirmMessage = isApprove 
+            ? 'Yakin ingin approve request ini?' 
+            : 'Yakin ingin reject request ini?';
 
-        if(!confirm('Yakin ingin approve request ini?')) return;
+        if (!confirm(confirmMessage)) return;
 
         const id = button.getAttribute('data-id');
 
         try {
-            const res = await fetch(`/admin/mentor-verification/${id}/approve`, {
+            const res = await fetch(`/admin/mentor-verification/${id}/${action}`, {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -90,11 +95,11 @@ document.querySelectorAll('.approve-btn').forEach(button => {
 
             const result = await res.json();
 
-            if(res.ok){
-                alert(result.message || 'Request berhasil diapprove!');
+            if (res.ok) {
+                alert(result.message || `Request berhasil ${action}ed!`);
                 document.getElementById(`request-${id}`).remove();
             } else {
-                alert(result.message || 'Gagal approve request.');
+                alert(result.message || `Gagal ${action} request.`);
             }
         } catch (err) {
             console.error(err);
@@ -103,5 +108,6 @@ document.querySelectorAll('.approve-btn').forEach(button => {
     });
 });
 </script>
+
 
 @endsection
