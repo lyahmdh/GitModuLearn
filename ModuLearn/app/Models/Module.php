@@ -15,6 +15,7 @@ class Module extends Model
         'category_id',
         'title',
         'description',
+        'thumbnail',
     ];
 
     /**

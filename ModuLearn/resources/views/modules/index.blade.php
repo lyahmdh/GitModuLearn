@@ -4,22 +4,29 @@
 <style>
     /* == Modern Card == */
     .module-card {
-        background-color: #d9d9d9;
+        background-color: #ffffff;
         margin-left:100px;
         margin-right:100px;
         border-radius: 30px;
-        /* width: 100%; */
         min-height: 224px;
         padding: 25px 30px;
         display: flex;
         align-items: center;
         gap: 30px;
+        transition: all 0.3s ease; /* animasi smooth */
     }
+
+    .module-card:hover {
+        box-shadow: 0 15px 30px rgba(0,0,0,0.15); /* shadow saat hover */
+        transform: translateY(-5px); /* naik sedikit */
+    }
+
 
     .module-thumb {
         width: 200px;
         height: 200px;
         border-radius: 14px;
+        border: 2px solid #0a57ff;
         object-fit: cover;
         background: #fff;
     }
@@ -84,14 +91,14 @@
                 class="form-control rounded-pill px-4"
                 placeholder="Cari modul..."
                 value="{{ request('search') }}"
-                style="width: 1100px; height: 48px; flex: 1; border-radius: 30px;">
+                style="width: 1100px; height: 48px; flex: 1; border-radius: 30px; border: 2px solid #0a57ff;">
 
             {{-- DROPDOWN CATEGORY --}}
             <select 
                 name="category" 
                 class="form-select rounded-pill px-3" 
                 onchange="this.form.submit()" 
-                style="width: 220px; height:48px; border-radius: 30px;">
+                style="width: 220px; height:48px; border-radius: 30px; border: 2px solid #0a57ff;">
                 <option value="">Semua Kategori</option>
                 @foreach($categories as $cat)
                     <option value="{{ $cat->id }}" 

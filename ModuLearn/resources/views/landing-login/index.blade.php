@@ -28,7 +28,8 @@
     .fitur-title {
         font-weight: 800;
         font-size: 3.5rem;
-        color: #3b3b3b;
+        color: #0A57FF;
+        margin-bottom: 50px;
     }
 
     .fitur-box {
