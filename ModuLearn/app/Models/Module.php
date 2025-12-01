@@ -15,6 +15,7 @@ class Module extends Model
         'category_id',
         'title',
         'description',
+        'thumbnail',
     ];
 
     /**
@@ -53,6 +54,11 @@ class Module extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'mentor_id'); // sesuaikan foreign key
+    }
+
+    public function submoduleProgress()
+    {
+        return $this->hasMany(SubmoduleProgress::class);
     }
 
 }

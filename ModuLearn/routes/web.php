@@ -81,8 +81,11 @@ Route::middleware(['auth'])->group(function () {
         // My Modules (modul milik mentor sendiri)
         Route::get('/dashboard/mentor/my-modules', [MentorDashboardController::class, 'myModules'])->name('dashboard.mentor.modules.my-modules');
         Route::get('/dashboard/mentor/my-modules/create', [MentorDashboardController::class, 'createModule'])->name('dashboard.mentor.modules.create');
+        Route::post('/dashboard/mentor/my-modules', [MentorDashboardController::class, 'storeModule'])->name('dashboard.mentor.modules.store');
         Route::get('/dashboard/mentor/my-modules/{id}/edit', [MentorDashboardController::class, 'editModule'])->name('dashboard.mentor.modules.edit');
         Route::put('/dashboard/mentor/my-modules/{id}', [MentorDashboardController::class, 'updateModule'])->name('dashboard.mentor.modules.update');
+        Route::delete('/dashboard/mentor/my-modules/{module}', [ModuleController::class, 'destroy'])->name('dashboard.mentor.modules.destroy');
+
 
         // Likes & Profile
         Route::get('/dashboard/mentor/likes', [MentorDashboardController::class, 'likedModules'])->name('dashboard.mentor.likes');

@@ -66,12 +66,42 @@ class ModuleService
     }
 
     /**
-     * Hapus modul
+     * Hapus modul beserta submodules, likes, dan progress user
      */
     public function delete(Module $module)
     {
+        // 1. Hapus thumbnail jika ada
+        if ($module->thumbnail && \Storage::disk('public')->exists($module->thumbnail)) {
+            \Storage::disk('public')->delete($module->thumbnail);
+        }
+
+        // 2. Hapus semua submodules beserta progress dan file
+        foreach ($module->submodules as $sub) {
+
+            // Hapus file konten submodule jika ada
+            if ($sub->content_path && \Storage::disk('public')->exists($sub->content_path)) {
+                \Storage::disk('public')->delete($sub->content_path);
+            }
+        
+            // Hapus progress user terkait submodule ini
+            if ($sub->progress()->exists()) { // pakai nama relasi progress
+                $sub->progress()->delete();
+            }
+        
+            // Hapus submodule
+            $sub->delete();
+        }
+        
+
+        // 3. Hapus likes terkait modul ini
+        if ($module->likes()->exists()) {
+            $module->likes()->delete();
+        }
+
+        // 4. Terakhir, hapus modul
         return $module->delete();
     }
+
 
     /**
      * Ambil modul beserta jumlah likes, optional bisa filter kategori

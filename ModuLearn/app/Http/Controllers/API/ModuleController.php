@@ -54,22 +54,14 @@ class ModuleController extends Controller
     }
 
     // Hapus modul
-    public function destroy(Module $module, Request $request)
+    public function destroy(Module $module)
     {
-        try {
-            $this->service->delete($module);
+        // Panggil service untuk hapus modul
+        $this->service->delete($module);
 
-            if ($request->wantsJson()) {
-                return response()->json(['message' => 'Modul berhasil dihapus']);
-            }
-
-            return redirect()->back()->with('success', 'Modul berhasil dihapus!');
-        } catch (\Exception $e) {
-            if ($request->wantsJson()) {
-                return response()->json(['message' => 'Gagal menghapus modul', 'error' => $e->getMessage()], 500);
-            }
-
-            return redirect()->back()->with('error', 'Gagal menghapus modul: ' . $e->getMessage());
-        }
+        // Redirect kembali dengan pesan sukses
+        return redirect()
+            ->back()
+            ->with('success', 'Module berhasil dihapus beserta semua submodules dan data terkait.');
     }
 }
