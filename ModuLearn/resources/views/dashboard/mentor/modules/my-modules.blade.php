@@ -59,6 +59,7 @@
         height: 100%;
         display: flex;
         flex-direction: column;
+        margin-bottom: 10px;
     }
 
     .module-card:hover {
@@ -93,6 +94,11 @@
 
     .btn-edit:hover {
         background: #1e40af;
+    }
+
+    .btn-delete {
+        background: #FF0000;
+        color: white;
     }
 
     .btn-submodules {
@@ -145,6 +151,19 @@
                         <a href="{{ route('dashboard.mentor.submodules.index', $mod->id) }}" class="btn btn-submodules">
                             View Submodules
                         </a>
+
+                        <form 
+                            action="{{ route('dashboard.mentor.modules.destroy', $mod->id) }}" 
+                            method="POST"
+                            onsubmit="return confirm('Yakin ingin menghapus modul ini? Semua submodules akan terhapus.')">
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit" class="btn btn-delete">
+                                Delete
+                            </button>
+                        </form>
+
                     </div>
 
                 </div>

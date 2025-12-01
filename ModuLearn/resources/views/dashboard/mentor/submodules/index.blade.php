@@ -147,7 +147,6 @@
             </div>
         @empty
             <div class="col-12 text-center py-5">
-                <img src="https://cdn-icons-png.flaticon.com/512/4076/4076500.png" width="120" class="mb-3 opacity-75">
                 <p class="text-muted fs-5">Belum ada submodule pada modul ini.</p>
             </div>
         @endforelse

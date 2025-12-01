@@ -55,4 +55,9 @@ class Module extends Model
         return $this->belongsTo(User::class, 'mentor_id'); // sesuaikan foreign key
     }
 
+    public function submoduleProgress()
+    {
+        return $this->hasMany(SubmoduleProgress::class);
+    }
+
 }
